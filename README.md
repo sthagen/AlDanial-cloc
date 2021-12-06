@@ -5,10 +5,16 @@
 * * *
 cloc counts blank lines, comment lines, and physical lines of source code in many programming languages.
 
-Latest release:  v1.82 (May 3, 2019)
+Latest release:  v1.92 (Dec. 5, 2021)
 
-Hosted at http://cloc.sourceforge.net/ since August 2006, cloc began the
-transition to GitHub in September 2015.
+<a href="https://github.com/AlDanial/cloc/graphs/contributors" alt="Contributors">
+    <img src="https://img.shields.io/github/contributors/AlDanial/cloc" /></a>
+<a href="https://zenodo.org/badge/latestdoi/42029482">
+    <img src="https://zenodo.org/badge/42029482.svg" alt="DOI"></a>
+<img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg>" />
+
+cloc moved to GitHub in September 2015 after being hosted
+at http://cloc.sourceforge.net/ since August 2006.
 
 *   [Quick Start](#quick-start-)
 *   [Overview](#overview-)
@@ -33,19 +39,24 @@ transition to GitHub in September 2015.
     *   [SQL](#sql-)
     *   [Custom Column Output](#custom-column-output-)
     *   [Wrapping cloc in other scripts](#wrapping-cloc-in-other-scripts-)
-    *   [Count specific git branch](#count-specific-git-branch-)
+    *   [git and UTF8 pathnames](#git-and-UTF8-pathnames-)
     *   [Third Generation Language Scale Factors](#third-generation-language-scale-factors-)
+    *   [options.txt configuration file](#optionstxt-configuration-file-)
 *   [Complex regular subexpression recursion limit ](#complex-regular-subexpression-recursion-limit-)
 *   [Limitations](#limitations-)
-*   [How to Request Support for Additional Languages](#how-to-request-support-for-additional-languages-)
-*   [Features Currently in Development](#features-currently-in-development-)
+*   [Requesting Support for Additional Languages](#requesting-support-for-additional-languages-)
+*   [Reporting Problems](#reporting-problems-)
+*   [Citation](#citation-)
 *   [Acknowledgments](#acknowledgments-)
 *   [Copyright](#copyright-)
 
 <a name="Quick_Start"></a>      []({{{1)
 # [Quick Start &#9650;](#___top "click to go to top of document")
 
-Step 1:  Download cloc (several methods, see below).
+Step 1:  Download cloc (several methods, see below) or run cloc's
+[docker image](#Docker-).  The Windows executable has no requirements.
+The source version of cloc requires a Perl interpreter, and the
+Docker version of cloc requires a Docker installation.
 
 Step 2:  Open a terminal (`cmd.exe` on Windows).
 
@@ -53,8 +64,8 @@ Step 3:  Invoke cloc to count your source files, directories, archives,
 or git commits.
 The executable name differs depending on whether you use the
 development source version (`cloc`), source for a
-released version (`cloc-1.82.pl`) or a Windows executable
-(`cloc-1.82.exe`).  On this page, `cloc` is the generic term
+released version (`cloc-1.92.pl`) or a Windows executable
+(`cloc-1.92.exe`).  On this page, `cloc` is the generic term
 used to refer to any of these.
 
 **a file**
@@ -140,7 +151,7 @@ SUM:                            34           1538            736           4761
 
 Say you have a directory with three different git-managed projects,
 Project0, Project1, and Project2.  You can use your shell's looping
-capability to count the code in each.  This example uses bash:
+capability to count the code in each.  This example uses bash (scroll down for cmd.exe example):
 <pre>
 prompt> for d in ./*/ ; do (cd "$d" && echo "$d" && cloc --vcs git); done
 ./Project0/
@@ -189,24 +200,14 @@ SUM:                            39           1564           1365           3945
 -------------------------------------------------------------------------------
 </pre>
 
+**each subdirectory of a particular directory (Windows/cmd.exe)**
+<pre>
+for /D %I in (.\*) do cd %I && cloc --vcs git && cd ..
+</pre>
+
 [](1}}})
 <a name="Overview"></a>      []({{{1)
 # [Overview &#9650;](#___top "click to go to top of document")
-
-Translations:
-[Arabic](http://www.garciniacambogiareviews.ca/translations/aldanial-cloc/),
-[Armenian](http://students.studybay.com/?p=34),
-[Belarussian](http://www.besteonderdelen.nl/blog/?p=5426),
-[Bulgarian](http://www.ajoft.com/wpaper/aj-cloc.html),
-[Hungarian](http://www.forallworld.com/cloc-grof-sornyi-kodot/),
-[]( [Polish](http://www.trevister.com/blog/cloc.html), )
-[]( [Russian](http://someblogscience.com/cloc.html), )
-[Portuguese](https://www.homeyou.com/~edu/cloc),
-[Serbo-Croatian](http://science.webhostinggeeks.com/cloc),
-[Romanian](http://www.bildelestore.dk/blog/cloc-contele-de-linii-de-cod/),
-[Slovakian](http://newknowledgez.com/cloc.html),
-[Tamil](http://healthcareadministrationdegree.co/socialwork/aldanial-cloc/)
-[]( [Ukrainian](http://blog.kudoybook.com/cloc/) )
 
 cloc counts blank lines, comment lines, and physical lines of source
 code in [many programming languages](#Languages). Given two versions of
@@ -216,10 +217,11 @@ standard distribution of Perl v5.6 and higher (code from some external
 modules is [embedded within
 cloc](https://github.com/AlDanial/cloc#regexp_common)) and so is
 quite portable. cloc is known to run on many flavors of Linux, FreeBSD,
-NetBSD, OpenBSD, Mac OS X, AIX, HP-UX, Solaris, IRIX, z/OS, and Windows.
+NetBSD, OpenBSD, macOS, AIX, HP-UX, Solaris, IRIX, z/OS, and Windows.
 (To run the Perl source version of cloc on Windows one needs
 [ActiveState Perl](http://www.activestate.com/activeperl) 5.6.1 or
 higher, [Strawberry Perl](http://strawberryperl.com/),
+Windows Subsystem for Linux,
 [Cygwin](http://www.cygwin.com/),
 [MobaXTerm](http://mobaxterm.mobatek.net/) with the Perl plug-in
 installed,
@@ -241,27 +243,35 @@ and Tye McQueen's Perl module
 Language scale factors were derived from Mayes Consulting, LLC web site
 http://softwareestimator.com/IndustryData2.htm.
 [](1}}})
-<a name="apt-get"></a> []({{{1)
-## Install via package manager
-Depending your operating system, one of these installation methods may work for you:
 
-    npm install -g cloc                    # https://www.npmjs.com/package/cloc
-    sudo apt install cloc                  # Debian, Ubuntu
-    sudo yum install cloc                  # Red Hat, Fedora
-    sudo dnf install cloc                  # Fedora 22 or later
-    sudo pacman -S cloc                    # Arch
-    sudo emerge -av dev-util/cloc          # Gentoo https://packages.gentoo.org/packages/dev-util/cloc
-    sudo apk add cloc                      # Alpine Linux
-    sudo pkg install cloc                  # FreeBSD
-    sudo port install cloc                 # Mac OS X with MacPorts
-    brew install cloc                      # Mac OS X with Homebrew
-    choco install cloc                     # Windows with Chocolatey
-    scoop install cloc                     # Windows with Scoop
+<a name="Docker"></a> []({{{1)
+## Run via docker
+```shell
+docker run --rm -v $PWD:/tmp aldanial/cloc
+```
+## Install via package manager
+Depending your operating system, one of these installation methods may
+work for you (all but the last two entries for Windows require
+a Perl interpreter):
+
+    npm install -g cloc              # https://www.npmjs.com/package/cloc
+    sudo apt install cloc            # Debian, Ubuntu
+    sudo yum install cloc            # Red Hat, Fedora
+    sudo dnf install cloc            # Fedora 22 or later
+    sudo pacman -S cloc              # Arch
+    sudo emerge -av dev-util/cloc    # Gentoo https://packages.gentoo.org/packages/dev-util/cloc
+    sudo apk add cloc                # Alpine Linux
+    doas pkg_add cloc                # OpenBSD
+    sudo pkg install cloc            # FreeBSD
+    sudo port install cloc           # macOS with MacPorts
+    brew install cloc                # macOS with Homebrew
+    choco install cloc               # Windows with Chocolatey
+    scoop install cloc               # Windows with Scoop
 
 **Note**: I don't control any of these packages.
 If you encounter a bug in cloc using one of the above
 packages, try with cloc pulled from the latest stable release here
-on github (link follows below) before submitting a problem report.
+on GitHub (link follows below) before submitting a problem report.
 [](1}}})
 <a name="Stable"></a> []({{{1)
 ## Stable release
@@ -295,7 +305,7 @@ cloc has many features that make it easy to use, thorough, extensible, and porta
 6.  Has numerous troubleshooting options.
 7.  Handles file and directory names with spaces and other unusual characters.
 8.  Has no dependencies outside the standard Perl distribution.
-9.  Runs on Linux, FreeBSD, NetBSD, OpenBSD, Mac OS X, AIX, HP-UX, Solaris, IRIX, and z/OS systems that have Perl 5.6 or higher. The source version runs on Windows with either ActiveState Perl, Strawberry Perl, Cygwin, or MobaXTerm+Perl plugin. Alternatively on Windows one can run the Windows binary which has no dependencies.
+9.  Runs on Linux, FreeBSD, NetBSD, OpenBSD, macOS, AIX, HP-UX, Solaris, IRIX, and z/OS systems that have Perl 5.6 or higher. The source version runs on Windows with either ActiveState Perl, Strawberry Perl, Cygwin, or MobaXTerm+Perl plugin. Alternatively on Windows one can run the Windows binary which has no dependencies.
 [](1}}})
 
 <a name="Other_Counters"></a> []({{{1)
@@ -340,7 +350,7 @@ Additionally, cloc will use Digest::MD5 to validate uniqueness among
 equally-sized input files if Digest::MD5 is installed locally.
 
 A parallel processing option, <tt>--processes=<i>N</i></tt>, was introduced with
-cloc version 1.76 to enable faster runs on multicored machines.  However,
+cloc version 1.76 to enable faster runs on multi-core machines.  However,
 to use it, one must have the module Parallel::ForkManager installed.
 This module does not work reliably on Windows so parallel processing
 will only work on Unix-like operating systems.
@@ -352,27 +362,26 @@ and Digest::MD5 installed locally.
 # [Building a Windows Executable &#9650;](#___top "click to go to top of document")
 
 The Windows downloads
-<tt>cloc-1.70.exe</tt> and
-<tt>cloc-1.72.exe</tt> were
-built with [PAR::Packer](http://search.cpan.org/~rschupp/PAR-Packer-1.019/lib/pp.pm)
-and Strawberry Perl 5.24.0.1
+<tt>cloc-1.92.exe</tt>,
+<tt>cloc-1.90.exe</tt> and
+<tt>cloc-1.88.exe</tt> were built on a 64 bit Windows 10 computer
+using
+[Strawberry Perl](http://strawberryperl.com/)
+5.30.2 and
+[PAR::Packer](http://search.cpan.org/~rschupp/PAR-Packer-1.050/lib/pp.pm)
+to build the `.exe`.
+
+Release 1.86 was built on a 64 bit Windows 10 virtual machine
+downloaded from https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/;
+releases 1.74 through 1.84
+were was built on a 32 bit Windows 7 virtual machine
+using Strawberry Perl 5.26.1.1, while
+1.70 and 1.72 were built with Strawberry Perl 5.24.0.1
 on an Amazon Web Services t2.micro instance running Microsoft Windows Server 2008
 (32 bit for 1.70 and 1.72; 64 bit for 1.74).
-
-Releases 1.74 through 1.82
-were was built on a 32 bit Windows 7 virtual machine (IE11.Win7.For.Windows.VirtualBox.zip
-pulled from https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
-using Strawberry Perl 5.26.1.1.
-
-The <tt>cloc-1.66.exe</tt> executable was built with [PAR::Packer](http://search.cpan.org/~rschupp/PAR-Packer-1.019/lib/pp.pm)
-on a 32 bit Windows 7 VirtualBox image
-pulled from https://dev.windows.com/en-us/microsoft-edge/tools/vms/linux/
-and running on an Ubuntu 15.10 host.
-The virtual machine ran
-[Strawberry Perl](http://strawberryperl.com/) version 5.22.1.
-Windows executables of cloc versions
-1.60 and earlier were built with
-[perl2exe](http://www.indigostar.com/perl2exe.htm) on a 32 bit Windows
+Release 1.66 was built on a 32 bit Windows 7 VirtualBox image.
+Windows executables of cloc versions 1.60 and earlier were built with
+[perl2exe](http://www.indigostar.com/perl2exe/) on a 32 bit Windows
 XP computer. A small modification was made to the cloc source code
 before passing it to perl2exe; lines 87 and 88 were uncommented:
 
@@ -391,13 +400,27 @@ run the cloc source file.
 On centrally-managed corporate Windows machines, however, this
 this may be difficult or impossible.
 
-The Windows executable distributed with cloc
-is provided as
+The Windows executable distributed with cloc is provided as
 a best-effort of a virus and malware-free `.exe`.
 You are encouraged to run your own virus scanners against the
 executable and also check sites such
 https://www.virustotal.com/ .
 The entries for recent versions are:
+
+cloc-1.92.exe:
+https://www.virustotal.com/gui/file/2668fcf8609c431e8934fe9e1866bc620c58d198c4eb262f1d3ef31ef4a690f7
+
+cloc-1.90.exe:
+https://www.virustotal.com/gui/file/d655caae55486f9bac39f7e3c7b7553bcfcfe2b88914c79bfc328055f22b8a37/detection
+
+cloc-1.88.exe:
+https://www.virustotal.com/gui/file/97d5d2631d1cccdbfd99267ab8a4cf5968816bbe52c0f9324e72e768857f642d/detection
+
+cloc-1.86.exe:
+https://www.virustotal.com/gui/file/1b2e189df1834411b34534db446330d1c379b4bc008af3042ee9ade818c6a1c8/detection
+
+cloc-1.84.exe:
+https://www.virustotal.com/gui/file/e73d490c1e4ae2f50ee174005614029b4fa2610dcb76988714839d7be68479af/detection
 
 cloc-1.82.exe:
 https://www.virustotal.com/#/file/2e5fb443fdefd776d7b6b136a25e5ee2048991e735042897dbd0bf92efb16563/detection
@@ -443,7 +466,7 @@ cloc is to use [ActiveState's Perl Development Kit](http://www.activestate.com/p
 It includes a utility, `perlapp`, which can build stand-alone
 Windows, Mac, and Linux binaries of Perl source code.
 
-[perl2exe](http://www.indigostar.com/perl2exe.php)
+[perl2exe](http://www.indigostar.com/perl2exe/)
 will also do the trick.  If you do have `perl2exe`, modify lines
 84-87 in the cloc source code for a minor code
 modification that is necessary to make a cloc Windows executable.
@@ -460,7 +483,7 @@ C:> cpan -i Digest::MD5
 C:> cpan -i Regexp::Common
 C:> cpan -i Algorithm::Diff
 C:> cpan -i PAR::Packer
-C:> pp -M Digest::MD5 -c -x -o cloc-1.82.exe cloc
+C:> pp -M Digest::MD5 -c -x -o cloc-1.92.exe cloc-1.92.pl
 </pre>
 
 A variation on the instructions above is if you installed the portable
@@ -508,7 +531,13 @@ SUM:                              3434         176974         243934         903
 
 </pre>
 
-To run cloc on Windows computers, one must first open up a command (aka DOS) window and invoke cloc.exe from the command line there.
+To run cloc on Windows computers, open up a command (aka DOS) window
+and invoke cloc.exe from the command line there.
+Alternatively, try ClocViewer, the GUI wrapper around cloc found at
+https://github.com/Roemer/ClocViewer.
+
+See also https://github.com/jmensch1/codeflower for a
+graphical rendering of cloc results.
 [](1}}})
 <a name="Options"></a> []({{{1)
 # [Options &#9650;](#___top "click to go to top of document")
@@ -544,8 +573,15 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              process from &lt;file&gt;, which has one file/directory
                              name per line.  Only exact matches are counted;
                              relative path names will be resolved starting from
-                             the directory where cloc is invoked.
+                             the directory where cloc is invoked.  Set &lt;file&gt;
+                             to - to read file names from a STDIN pipe.
                              See also --exclude-list-file.
+   --diff-list-file=&lt;file&gt;   Take the pairs of file names to be diff'ed from
+                             &lt;file&gt;, whose format matches the output of
+                             --diff-alignment.  (Run with that option to
+                             see a sample.)  The language identifier at the
+                             end of each line is ignored.  This enables --diff
+                             mode and bypasses file pair alignment logic.
    --vcs=&lt;VCS&gt;               Invoke a system call to &lt;VCS&gt; to obtain a list of
                              files to work on.  If &lt;VCS&gt; is 'git', then will
                              invoke 'git ls-files' to get a file list and
@@ -566,6 +602,10 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              to obtain file names (and therefore may require
                              authentication to the remote repository), but
                              the files themselves must be local.
+                             Setting &lt;VCS&gt; to 'auto' selects between 'git'
+                             and 'svn' (or neither) depending on the presence
+                             of a .git or .svn subdirectory below the directory
+                             where cloc is invoked.
    --unicode                 Check binary files to see if they contain Unicode
                              expanded ASCII text.  This causes performance to
                              drop noticeably.
@@ -597,15 +637,24 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              may be any mix of files, directories, archives,
                              or git commit hashes.  Use --diff-alignment to
                              generate a list showing which file pairs where
-                             compared.  See also --count-and-diff, --diff-alignment,
-                             --diff-timeout, --ignore-case, --ignore-whitespace.
+                             compared.  When comparing git branches, only files
+                             which have changed in either commit are compared.
+                             See also --git, --count-and-diff, --diff-alignment,
+                             --diff-list-file, --diff-timeout, --ignore-case,
+                             --ignore-whitespace.
    --diff-timeout &lt;N&gt;        Ignore files which take more than &lt;N&gt; seconds
                              to process.  Default is 10 seconds.  Setting &lt;N&gt;
                              to 0 allows unlimited time.  (Large files with many
                              repeated lines can cause Algorithm::Diff::sdiff()
-                             to take hours.)
+                             to take hours.) See also --timeout.
+   --docstring-as-code       cloc considers docstrings to be comments, but this is
+                             not always correct as docstrings represent regular
+                             strings when they appear on the right hand side of an
+                             assignment or as function arguments.  This switch
+                             forces docstrings to be counted as code.
    --follow-links            [Unix only] Follow symbolic links to directories
                              (sym links to files are always followed).
+                             See also --stat.
    --force-lang=&lt;lang&gt;[,&lt;ext&gt;]
                              Process all files that have a &lt;ext&gt; extension
                              with the counter for language &lt;lang&gt;.  For
@@ -623,7 +672,7 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              then use these filters instead of the built-in
                              filters.  Note:  languages which map to the same
                              file extension (for example:
-                             MATLAB/Mathematica/Objective C/MUMPS/Mercury;
+                             MATLAB/Mathematica/Objective-C/MUMPS/Mercury;
                              Pascal/PHP; Lisp/OpenCL; Lisp/Julia; Perl/Prolog)
                              will be ignored as these require additional
                              processing that is not expressed in language
@@ -643,11 +692,23 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              commits, or between a git commit and a file,
                              directory, or archive.  Use -v/--verbose to see
                              the git system commands cloc issues.
+   --git-diff-rel            Same as --git --diff, or just --diff if the inputs
+                             are recognized as git targets.  Only files which
+                             have changed in either commit are compared.
+   --git-diff-all            Git diff strategy #2:  compare all files in the
+                             repository between the two commits.
    --ignore-whitespace       Ignore horizontal white space when comparing files
                              with --diff.  See also --ignore-case.
-   --ignore-case             Ignore changes in case; consider upper- and lower-
-                             case letters equivalent when comparing files with
-                             --diff.  See also --ignore-whitespace.
+   --ignore-case             Ignore changes in case within file contents;
+                             consider upper- and lowercase letters equivalent
+                             when comparing files with --diff.  See also
+                             --ignore-whitespace.
+   --ignore-case-ext         Ignore case of file name extensions.  This will
+                             cause problems counting some languages
+                             (specifically, .c and .C are associated with C and
+                             C++; this switch would count .C files as C rather
+                             than C++ on *nix operating systems).  File name
+                             case insensitivity is always true on Windows.
    --lang-no-ext=&lt;lang&gt;      Count files without extensions using the &lt;lang&gt;
                              counter.  This option overrides internal logic
                              for files without extensions (where such files
@@ -699,6 +760,14 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              a performance boost at the expense of counting
                              files with identical contents multiple times
                              (if such duplicates exist).
+   --stat                    Some file systems (AFS, CD-ROM, FAT, HPFS, SMB)
+                             do not have directory 'nlink' counts that match
+                             the number of its subdirectories.  Consequently
+                             cloc may undercount or completely skip the
+                             contents of such file systems.  This switch forces
+                             File::Find to stat directories to obtain the
+                             correct count.  File search speed will decrease.
+                             See also --follow-links.
    --stdin-name=&lt;file&gt;       Give a file name to use to determine the language
                              for standard input.  (Use - as the input name to
                              receive source code via STDIN.)
@@ -721,9 +790,16 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              --strip-comments will contain different strings
                              where ever embedded comments are found.
    --sum-reports             Input arguments are report files previously
-                             created with the --report-file option.  Makes
-                             a cumulative set of results containing the
+                             created with the --report-file option in plain
+                             format (eg. not JSON, YAML, XML, or SQL).
+                             Makes a cumulative set of results containing the
                              sum of data from the individual report files.
+   --timeout &lt;N&gt;             Ignore files which take more than &lt;N&gt; seconds
+                             to process at any of the language's filter stages.
+                             The default maximum number of seconds spent on a
+                             filter stage is the number of lines in the file
+                             divided by one thousand.  Setting &lt;N&gt; to 0 allows
+                             unlimited time.  See also --diff-timeout.
    --processes=NUM           [Available only on systems with a recent version
                              of the Parallel::ForkManager module.  Not
                              available on Windows.] Sets the maximum number of
@@ -746,6 +822,8 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              See also --unix, --show-os.
 
  Filter Options
+   --exclude-content=&lt;regex&gt; Exclude files containing text that matches the given
+                             regular expression.
    --exclude-dir=&lt;D1&gt;[,D2,]  Exclude the given comma separated directories
                              D1, D2, D3, et cetera, from being scanned.  For
                              example  --exclude-dir=.cache,test  will skip
@@ -876,7 +954,7 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              be 200%.  The code column remains a line count.
    --csv                     Write the results as comma separated values.
    --csv-delimiter=&lt;C&gt;       Use the character &lt;C&gt; as the delimiter for comma
-                             separated files instead of ,.  This switch forces
+                             separated files instead of ,.  This switch forces --csv to be on.
    --file-encoding=&lt;E&gt;       Write output files using the &lt;E&gt; encoding instead of
                              the default ASCII (&lt;E&gt; = 'UTF-7').  Examples: 'UTF-16',
                              'euc-kr', 'iso-8859-16'.  Known encodings can be
@@ -915,8 +993,6 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
                              cloc-diff.xsl if --diff is also given).
                              This switch forces --xml on.
    --yaml                    Write the results in YAML.
-
-
 </pre>
 [](1}}})
 <a name="Languages"></a> []({{{1)
@@ -935,50 +1011,60 @@ Ant                        (build.xml, build.xml)
 ANTLR Grammar              (g, g4)
 Apex Class                 (cls)
 Apex Trigger               (trigger)
+APL                        (apl, apla, aplc, aplf, apli, apln, aplo, dyalog, dyapp, mipage)
 Arduino Sketch             (ino, pde)
 AsciiDoc                   (adoc, asciidoc)
-ASP                        (asa, asp)
+ASP                        (asa, ashx, asp, axd)
 ASP.NET                    (asax, ascx, asmx, aspx, master, sitemap, webinfo)
 AspectJ                    (aj)
-Assembly                   (asm, S, s)
-AutoHotkey                 (ahk)
-awk                        (awk)
-Blade                      (blade.php)
+Assembly                   (a51, asm, nasm, S, s)
+AutoHotkey                 (ahk, ahkl)
+awk                        (auk, awk, gawk, mawk, nawk)
+Bazel                      (BUILD)
+BizTalk Orchestration      (odx)
+BizTalk Pipeline           (btp)
+Blade                      (blade, blade.php)
 Bourne Again Shell         (bash)
 Bourne Shell               (sh)
 BrightScript               (brs)
 builder                    (xml.builder)
-C                          (c, ec, pgc)
+C                          (c, cats, ec, idc, pgc)
 C Shell                    (csh, tcsh)
 C#                         (cs)
-C++                        (C, c++, cc, CPP, cpp, cxx, inl, pcc)
-C/C++ Header               (h, H, hh, hpp, hxx)
+C# Designer                (designer.cs)
+C++                        (C, c++, cc, CPP, cpp, cxx, h++, inl, ipp, pcc, tcc, tpp)
+C/C++ Header               (H, h, hh, hpp, hxx)
+Cake Build Script          (cake)
 CCS                        (ccs)
 Chapel                     (chpl)
 Clean                      (dcl, icl)
-Clojure                    (clj)
+Clojure                    (boot, cl2, clj, cljs.hl, cljscm, cljx, hic, riemann.config)
 ClojureC                   (cljc)
 ClojureScript              (cljs)
-CMake                      (cmake, CMakeLists.txt)
-COBOL                      (cbl, CBL, cob, COB)
-CoffeeScript               (coffee)
-ColdFusion                 (cfm)
+CMake                      (cmake, cmake.in, CMakeLists.txt)
+COBOL                      (CBL, cbl, ccp, COB, cob, cobol, cpy)
+CoffeeScript               (_coffee, cakefile, cjsx, coffee, iced)
+ColdFusion                 (cfm, cfml)
 ColdFusion CFScript        (cfc)
 Coq                        (v)
 Crystal                    (cr)
 CSON                       (cson)
 CSS                        (css)
+CSV                        (csv)
 Cucumber                   (feature)
 CUDA                       (cu, cuh)
-Cython                     (pyx)
+Cython                     (pxd, pxi, pyx)
 D                          (d)
 DAL                        (da)
 Dart                       (dart)
+Delphi Form                (dfm)
+dhall                      (dhall)
 DIET                       (dt)
-diff                       (diff)
+diff                       (diff, patch)
 DITA                       (dita)
+Dockerfile                 (Dockerfile, dockerfile)
 DOORS Extension Language   (dxl)
-DOS Batch                  (bat, BAT, BTM, btm, cmd, CMD)
+DOS Batch                  (BAT, bat, BTM, btm, CMD, cmd)
 Drools                     (drl)
 DTD                        (dtd)
 dtrace                     (d)
@@ -988,8 +1074,8 @@ EJS                        (ejs)
 Elixir                     (ex, exs)
 Elm                        (elm)
 Embedded Crystal           (ecr)
-ERB                        (erb, ERB)
-Erlang                     (erl, hrl)
+ERB                        (ERB, erb)
+Erlang                     (app.src, emakefile, erl, hrl, rebar.config, rebar.config.lock, rebar.lock, xrl, yrl)
 Expect                     (exp)
 F#                         (fsi, fs, fs)
 F# Script                  (fsx)
@@ -997,120 +1083,141 @@ Fennel                     (fnl)
 Fish Shell                 (fish)
 Focus                      (focexec)
 Forth                      (4th, e4, f83, fb, forth, fpm, fr, frt, ft, fth, rx, fs, f, for)
-Fortran 77                 (F, f77, F77, FOR, ftn, FTN, pfo, f, for)
-Fortran 90                 (f90, F90)
-Fortran 95                 (f95, F95)
+Fortran 77                 (F, F77, f77, FOR, FTN, ftn, pfo, f, for)
+Fortran 90                 (F90, f90)
+Fortran 95                 (F95, f95)
 Freemarker Template        (ftl)
 FXML                       (fxml)
 GDScript                   (gd)
 Gencat NLS                 (msg)
 Glade                      (glade, ui)
-GLSL                       (comp, frag, geom, glsl, tesc, tese, vert)
+Gleam                      (gleam)
+GLSL                       (comp, fp, frag, frg, fsh, fshader, geo, geom, glsl, glslv, gshader, tesc, tese, vert, vrx, vsh, vshader)
 Go                         (go)
+Godot Resource             (tres)
+Godot Scene                (tscn)
 Gradle                     (gradle, gradle.kts)
 Grails                     (gsp)
-GraphQL                    (gql, graphql)
-Groovy                     (gant, groovy)
-Haml                       (haml)
+GraphQL                    (gql, graphql, graphqls)
+Groovy                     (gant, groovy, grt, gtpl, gvy, jenkinsfile)
+Haml                       (haml, haml.deface)
 Handlebars                 (handlebars, hbs)
 Harbour                    (hb)
-Haskell                    (hs, lhs)
-Haxe                       (hx)
-HCL                        (hcl, nomad, tf)
-HLSL                       (cg, cginc, hlsl, shader)
+Haskell                    (hs, hsc, lhs)
+Haxe                       (hx, hxsl)
+HCL                        (hcl, nomad, tf, tfvars)
+HLSL                       (cg, cginc, fxh, hlsl, hlsli, shader)
 Hoon                       (hoon)
-HTML                       (htm, html)
-IDL                        (idl, pro)
+HTML                       (htm, html, html.hl, xht)
+IDL                        (dlm, idl, pro)
 Idris                      (idr)
 Igor Pro                   (ipf)
-INI                        (ini)
+Imba                       (imba)
+INI                        (buildozer.spec, ini, lektorproject, prefs)
 InstallShield              (ism)
+IPL                        (ipl)
 Java                       (java)
-JavaScript                 (es6, js)
+JavaScript                 (_js, bones, es6, jake, jakefile, js, jsb, jscad, jsfl, jsm, jss, mjs, njs, pac, sjs, ssjs, xsjs, xsjslib)
 JavaServer Faces           (jsf)
 JCL                        (jcl)
-JSON                       (json)
+Jinja Template             (jinja, jinja2)
+JSON                       (arcconfig, avsc, composer.lock, geojson, gltf, har, htmlhintrc, json, json-tmlanguage, jsonl, mcmeta, mcmod.info, tern-config, tern-project, tfstate, tfstate.backup, topojson, watchmanconfig, webapp, webmanifest, yyp)
 JSON5                      (json5)
 JSP                        (jsp, jspf)
 JSX                        (jsx)
 Julia                      (jl)
+Juniper Junos              (junos)
 Jupyter Notebook           (ipynb)
 Kermit                     (ksc)
 Korn Shell                 (ksh)
-Kotlin                     (kt, kts)
-Lean                       (lean)
+Kotlin                     (kt, ktm, kts)
+Lean                       (hlean, lean)
 LESS                       (less)
-lex                        (l)
+lex                        (l, lex)
 LFE                        (lfe)
 liquid                     (liquid)
 Lisp                       (asd, el, lisp, lsp, cl, jl)
 Literate Idris             (lidr)
 LiveLink OScript           (oscript)
+LLVM IR                    (ll)
+Logos                      (x, xm)
 Logtalk                    (lgt, logtalk)
-Lua                        (lua)
+Lua                        (lua, nse, p8, pd_lua, rbxs, wlua)
 m4                         (ac, m4)
-make                       (am, gnumakefile, Gnumakefile, Makefile, makefile, mk)
-Mako                       (mako)
-Markdown                   (md)
-Mathematica                (mt, wl, wlt, m)
+make                       (am, Gnumakefile, gnumakefile, Makefile, makefile, mk)
+Mako                       (mako, mao)
+Markdown                   (contents.lr, markdown, md, mdown, mdwn, mdx, mkd, mkdn, mkdown, ronn, workbook)
+Mathematica                (cdf, ma, mathematica, mt, nbp, wl, wlt, m)
 MATLAB                     (m)
 Maven                      (pom, pom.xml)
+Meson                      (meson.build)
+Metal                      (metal)
 Modula3                    (i3, ig, m3, mg)
-MSBuild script             (csproj, vbproj, vcproj, wdproj, wixproj)
+Mojo                       (mojom)
+MSBuild script             (btproj, csproj, msbuild, vcproj, wdproj, wixproj)
 MUMPS                      (mps, m)
 Mustache                   (mustache)
 MXML                       (mxml)
 NAnt script                (build)
 NASTRAN DMAP               (dmap)
 Nemerle                    (n)
-Nim                        (nim)
+Nim                        (nim, nim.cfg, nimble, nimrod, nims)
 Nix                        (nix)
-Objective C                (m)
-Objective C++              (mm)
-OCaml                      (ml, mli, mll, mly)
+Objective-C                (m)
+Objective-C++              (mm)
+OCaml                      (eliom, eliomi, ml, ml4, mli, mll, mly)
+Odin                       (odin)
 OpenCL                     (cl)
 Oracle Forms               (fmt)
 Oracle PL/SQL              (bod, fnc, prc, spc, trg)
 Oracle Reports             (rex)
-Pascal                     (dpr, p, pas)
+Pascal                     (dpr, lpr, p, pas, pascal)
 Pascal/Puppet              (pp)
 Patran Command Language    (pcl, ses)
-Perl                       (perl, plh, plx, pm, pm6, pl)
-PHP                        (php, php3, php4, php5, phtml)
+Perl                       (ack, al, cpanfile, makefile.pl, perl, ph, plh, plx, pm, psgi, rexfile, pl, p6)
+PHP                        (aw, ctp, phakefile, php, php3, php4, php5, php_cs, php_cs.dist, phps, phpt, phtml)
 PHP/Pascal                 (inc)
 Pig Latin                  (pig)
 PL/I                       (pl1)
 PL/M                       (lit, plm)
+PlantUML                   (puml)
 PO File                    (po)
-PowerBuilder               (sra, srf, srm, srs, sru, srw)
+PowerBuilder               (pbt, sra, srf, srm, srs, sru, srw)
 PowerShell                 (ps1, psd1, psm1)
 ProGuard                   (pro)
-Prolog                     (P, pl, pro)
+Prolog                     (P, prolog, yap, pl, p6, pro)
+Properties                 (properties)
 Protocol Buffers           (proto)
-Pug                        (pug)
+Pug                        (jade, pug)
 PureScript                 (purs)
-Python                     (py, pyw)
-QML                        (qml)
+Python                     (buck, build.bazel, gclient, gyp, gypi, lmi, py, py3, pyde, pyi, pyp, pyt, pyw, sconscript, sconstruct, snakefile, tac, workspace, wscript, wsgi, xpy)
+QML                        (qbs, qml)
 Qt                         (ui)
 Qt Linguist                (ts)
 Qt Project                 (pro)
-R                          (r, R)
-Racket                     (rkt, rktl, scrbl)
+R                          (expr-dist, R, r, rd, rprofile, rsx)
+Racket                     (rkt, rktd, rktl, scrbl)
+Raku                       (pm6, raku, rakumod)
+Raku/Prolog                (P6, p6)
 RAML                       (raml)
 RapydScript                (pyj)
-Razor                      (cshtml)
+Razor                      (cshtml, razor)
 ReasonML                   (re, rei)
-reStructuredText           (rst)
-Rexx                       (rexx)
+ReScript                   (res, resi)
+reStructuredText           (rest, rest.txt, rst, rst.txt)
+Rexx                       (pprx, rexx)
+Ring                       (rform, rh, ring)
 Rmd                        (Rmd)
-RobotFramework             (robot, tsv)
-Ruby                       (rake, rb)
+RobotFramework             (robot)
+Ruby                       (appraisals, berksfile, brewfile, builder, buildfile, capfile, dangerfile, deliverfile, eye, fastfile, gemfile, gemfile.lock, gemspec, god, guardfile, irbrc, jarfile, jbuilder, mavenfile, mspec, podfile, podspec, pryrc, puppetfile, rabl, rake, rb, rbuild, rbw, rbx, ru, snapfile, thor, thorfile, vagrantfile, watchr)
 Ruby HTML                  (rhtml)
-Rust                       (rs)
+Rust                       (rs, rs.in)
+SaltStack                  (sls)
 SAS                        (sas)
-Sass                       (sass, scss)
-Scala                      (scala)
-Scheme                     (sc, sch, scm, sld, sls, ss)
+Sass                       (sass)
+Scala                      (kojo, sbt, scala)
+Scheme                     (sc, sch, scm, sld, sps, ss, sls)
+SCSS                       (scss)
 sed                        (sed)
 SKILL                      (il)
 SKILL++                    (ils)
@@ -1118,42 +1225,53 @@ Slice                      (ice)
 Slim                       (slim)
 Smalltalk                  (st, cs)
 Smarty                     (smarty, tpl)
-Softbridge Basic           (sbl, SBL)
+Softbridge Basic           (SBL, sbl)
 Solidity                   (sol)
 SparForte                  (sp)
 Specman e                  (e)
-SQL                        (psql, sql, SQL)
+SQL                        (cql, mysql, psql, SQL, sql, tab, udf, viw)
 SQL Data                   (data.sql)
 SQL Stored Procedure       (spc.sql, spoc.sql, sproc.sql, udf.sql)
+Squirrel                   (nut)
 Standard ML                (fun, sig, sml)
-Starlark                   (bzl)
-Stata                      (do, DO)
+Starlark                   (bazel, bzl)
+Stata                      (ado, DO, do, doh, ihlp, mata, matah, sthlp)
 Stylus                     (styl)
-SVG                        (svg, SVG)
+SugarSS                    (sss)
+Svelte                     (svelte)
+SVG                        (SVG, svg)
 Swift                      (swift)
 SWIG                       (i)
 Tcl/Tk                     (itk, tcl, tk)
 Teamcenter met             (met)
 Teamcenter mth             (mth)
-TeX                        (bst, dtx, sty, tex, cls)
+TeX                        (aux, bbx, bib, bst, cbx, dtx, ins, lbx, ltx, mkii, mkiv, mkvi, sty, tex, cls)
+Thrift                     (thrift)
 TITAN Project File Information (tpd)
 Titanium Style Sheet       (tss)
+TNSDL                      (cii, cin, in1, in2, in3, in4, inf, interface, rou, sdl, sdt, spd, ssc, sst)
 TOML                       (toml)
 TTCN                       (ttcn, ttcn2, ttcn3, ttcnpp)
 Twig                       (twig)
 TypeScript                 (tsx, ts)
+Umka                       (um)
 Unity-Prefab               (mat, prefab)
 Vala                       (vala)
 Vala Header                (vapi)
+VB for Applications        (VBA, vba)
 Velocity Template Language (vm)
 Verilog-SystemVerilog      (sv, svh, v)
-VHDL                       (VHD, vhd, vhdl, VHDL)
+VHDL                       (VHD, vhd, VHDL, vhdl, vhf, vhi, vho, vhs, vht, vhw)
 vim script                 (vim)
-Visual Basic               (bas, ctl, dsr, frm, vb, VB, vba, VBA, VBS, vbs, cls)
+Visual Basic               (BAS, bas, ctl, dsr, frm, FRX, frx, VBHTML, vbhtml, vbp, vbw, cls)
+Visual Basic .NET          (VB, vb, vbproj)
+Visual Basic Script        (VBS, vbs)
 Visual Fox Pro             (SCA, sca)
+Visual Studio Solution     (sln)
 Visualforce Component      (component)
 Visualforce Page           (page)
 Vuejs Component            (vue)
+Web Services Description   (wsdl)
 WebAssembly                (wast, wat)
 Windows Message File       (mc)
 Windows Module Definition  (def)
@@ -1161,18 +1279,21 @@ Windows Resource File      (rc, rc2)
 WiX include                (wxi)
 WiX source                 (wxs)
 WiX string localization    (wxl)
+WXML                       (wxml)
+WXSS                       (wxss)
 XAML                       (xaml)
-xBase                      (prg)
+xBase                      (prg, prw)
 xBase Header               (ch)
 XHTML                      (xhtml)
 XMI                        (XMI, xmi)
-XML                        (xml, XML)
-XQuery                     (xq, xquery)
-XSD                        (xsd, XSD)
-XSLT                       (xsl, XSL, XSLT, xslt)
+XML                        (adml, admx, ant, app.config, axml, builds, ccproj, ccxml, classpath, clixml, cproject, cscfg, csdef, csl, ct, depproj, ditamap, ditaval, dll.config, dotsettings, filters, fsproj, gmx, grxml, iml, ivy, jelly, jsproj, kml, launch, mdpolicy, mjml, natvis, ndproj, nproj, nuget.config, nuspec, odd, osm, packages.config, pkgproj, plist, proj, project, props, ps1xml, psc1, pt, rdf, resx, rss, scxml, settings.stylecop, sfproj, shproj, srdf, storyboard, sttheme, sublime-snippet, targets, tmcommand, tml, tmlanguage, tmpreferences, tmsnippet, tmtheme, urdf, ux, vcxproj, vsixmanifest, vssettings, vstemplate, vxml, web.config, web.debug.config, web.release.config, wsf, x3d, xacro, xib, xlf, xliff, XML, xml, xml.dist, xproj, xspec, xul, zcml)
+XQuery                     (xq, xql, xqm, xquery, xqy)
+XSD                        (XSD, xsd)
+XSLT                       (XSL, xsl, XSLT, xslt)
 Xtend                      (xtend)
-yacc                       (y)
-YAML                       (yaml, yml)
+yacc                       (y, yacc)
+YAML                       (clang-format, clang-tidy, gemrc, glide.lock, mir, reek, rviz, sublime-syntax, syntax, yaml, yaml-tmlanguage, yml, yml.mysql)
+Zig                        (zig)
 zsh                        (zsh)
 </pre>
 
@@ -1193,7 +1314,7 @@ These file extensions map to multiple languages:
 *   `itk` files could be Tcl or Tk
 *   `jl`  files could be Lisp or Julia
 *   `lit` files could be PL or M
-*   `m`   files could be MATLAB, Mathematica, Objective C, MUMPS or Mercury
+*   `m`   files could be MATLAB, Mathematica, Objective-C, MUMPS or Mercury
 *   `p6`  files could be Perl or Prolog
 *   `pl`  files could be Perl or Prolog
 *   `PL`  files could be Perl or Prolog
@@ -1207,7 +1328,7 @@ cloc has subroutines that attempt to identify the correct language based
 on the file's contents for these special cases. Language identification
 accuracy is a function of how much code the file contains; .m files with
 just one or two lines for example, seldom have enough information to
-correctly distinguish between MATLAB, Mercury, MUMPS, or Objective C.
+correctly distinguish between MATLAB, Mercury, MUMPS, or Objective-C.
 
 Languages with file extension collisions are difficult to customize with
 `--read-lang-def` or `--force-lang-def` as they have no mechanism to
@@ -1250,7 +1371,7 @@ A more detailed description:
     (anything that begins with #!). If it is shell script, the file is
     classified by that scripting language (if the language is
     recognized). If the file does not have a recognized extension or is
-    not a recognzied scripting language, the file is ignored.
+    not a recognized scripting language, the file is ignored.
 5.  All remaining files in the candidate list should now be source files
     for known programming languages. For each of these files:
 
@@ -1451,7 +1572,7 @@ option runs much more slowly than an absolute code count.
 To see how cloc aligns files between the two archives, use the
 `--diff-alignment` option
 <pre>
-cloc --diff-aligment=align.txt gcc-4.4.0.tar.bz2  gcc-4.5.0.tar.bz2
+cloc --diff-alignment=align.txt gcc-4.4.0.tar.bz2  gcc-4.5.0.tar.bz2
 </pre>
 to produce the file `align.txt` which shows the file pairs as well
 as files added and deleted.  The symbols `==` and `!=` before each
@@ -1495,7 +1616,7 @@ CSS
  modified                      1              0              0              1
  added                         0              0              0              0
  removed                       0              0              0              0
-Objective C
+Objective-C
  same                          7              0             61            635
  modified                      0              0              0              0
  added                         0              0              0              0
@@ -1902,7 +2023,7 @@ Prolog                          12            438              2           1146
 JSON                            14              1              0           1037
 yacc                             1             85             76            998
 DOS Batch                       44            199            148            895
-Objective C                      7             98             61            635
+Objective-C                      7             98             61            635
 Expect                           6            104            161            565
 Windows Message File             1            102             11            489
 CSS                              1             98             19            328
@@ -1969,7 +2090,7 @@ Bourne Again Shell                28            307            386           161
 Prolog                            13            447             42           1594
 JSON                              19              1              0           1396
 CSS                                4            151            181            790
-Objective C                        7             98             61            635
+Objective-C                        7             98             61            635
 Windows Resource File             20            120            145            604
 Expect                             6            104            161            565
 Windows Message File               3            104             19            500
@@ -2001,6 +2122,10 @@ script_lang.lang              6674         338250         417148        1902571
 SUM:                         15556         900921        1284892        5831741
 -------------------------------------------------------------------------------
 </pre>
+
+One limitation of the `--sum-reports` feature is that the individual counts must
+be saved in the plain text format.  Counts saved as
+XML, JSON, YAML, or SQL will produce errors if used in a summation.
 
 [](1}}})
 <a name="sql"></a> []({{{1)
@@ -2354,7 +2479,7 @@ python     Assembly                    12298
 python     make                         2953
 python     HTML                         2344
 python     Windows Module Definition    2081
-python     Objective C                   635
+python     Objective-C                   635
 python     Expect                        565
 python     DOS Batch                     506
 python     CSS                           328
@@ -2582,6 +2707,24 @@ https://github.com/dannyloweatx/checkmarx
 
 
 [](1}}})
+<a name="git_and_UTF8_pathnames"></a> []({{{1)
+##  [git and UTF8 pathnames &#9650;](#___top "click to go to top of document")
+
+cloc's ``--git`` option may fail if you work with directory or
+file names with UTF-8 characters (for example, see
+<a href=https://github.com/AlDanial/cloc/issues/457>issue 457</a>).
+The solution,
+https://stackoverflow.com/questions/22827239/how-to-make-git-properly-display-utf-8-encoded-pathnames-in-the-console-window,
+is to apply this git configuration command:
+
+<pre>
+git config --global core.quotepath off
+</pre>
+
+Your console's font will need to be capable of displaying
+Unicode characters.
+
+[](1}}})
 <a name="scale_factors"></a> []({{{1)
 ##  [Third Generation Language Scale Factors &#9650;](#___top "click to go to top of document")
 
@@ -2602,6 +2745,50 @@ The biggest flaw with this approach is that gearing ratios are defined
 for logical lines of source code not physical lines (which cloc counts).
 The values in cloc's 'scale' and '3rd gen. equiv.' columns should be
 taken with a large grain of salt.
+
+[](1}}})
+<a name="options_txt"></a> []({{{1)
+##  [options.txt configuration file &#9650;](#___top "click to go to top of document")
+
+If you find yourself using the same command line switches every
+time you invoke cloc, you can save some typing by adding those
+switches to the ``options.txt`` runtime configuration file.
+cloc will look for this file in the following default locations:
+<pre>
+# Linux, NetBSD, FreeBSD, macOS:
+/home/USERNAME/.config/cloc/options.txt
+
+# Windows
+C:\Users\USERNAME\AppData\cloc\options.txt
+</pre>
+
+Place each switch and arguments, if any, on a line by itself.
+Lines prefixed with ``#`` symbol are ignored as comments and
+blank lines are skipped.  Leading hyphens on the switches are
+optional.  Here's a sample file:
+<pre>
+# options.txt
+--vcs git
+v      # verbose level 1
+exclude-ext svg,html
+</pre>
+
+The path to the ``options.txt`` file can also be specified
+with the ``--config FILE`` switch.
+
+Finally, if cloc finds an ``options.txt`` file in the same
+directory as files given by any of these switches (in the
+listed priority), it will use that configuration file
+from that location:
+
+1. ``--list-file``
+1. ``--exclude-list-file``
+1. ``--read-lang-def``
+1. ``--force-lang-def``
+1. ``--diff-list-file``
+
+Run with ``--verbose`` to have cloc tell you which, if
+any, ``options.txt`` file it uses.
 
 [](1}}})
 <a name="complex_regex_recursion"></a> []({{{1)
@@ -2657,7 +2844,7 @@ xxxxxxx
 xxxxxxx
 xxxxxxx     ");
 </pre>
-where `xxxxxxx` represents cloc's view of commented text.
+where <tt>xxxxxxx</tt> represents cloc's view of commented text.
 Therefore cloc counts the five lines as two lines of C code and three
 lines of comments (lines with both code and comment are counted as code).
 
@@ -2675,7 +2862,7 @@ See the
 [previous section](#complex-regular-subexpression-recursion-limit-)
 on drawbacks to using ``--strip-str-comments``.
 </li>
-<li>  Embedded languages are not recognized.  For example, an HTML file containing
+<li> Embedded languages are not recognized.  For example, an HTML file containing
 JavaScript will be counted entirely as HTML.
 </li>
 <li> Python docstrings can serve several purposes.  They may
@@ -2684,14 +2871,26 @@ comment out blocks of code, or they can be regular strings (when
 they appear on the right hand side of an assignment or as a function argument).
 cloc is unable to infer the meaning of docstrings by context; by default
 cloc treats all docstrings as comments.  The switch
-``--docstring-as--code``
+<tt>--docstring-as-code</tt>
 treats all docstrings as code.
+</li>
+<li> Language definition files read with <tt>--read-lang-def</tt> or
+<tt>--force-lang-def</tt> must be plain ASCII text files.
+</li>
+<li> cloc treats compiler pragma's, for example <tt>#if</tt> / <tt>#endif</tt>, as code
+even if these are used to block lines of source from being compiled;
+the blocked lines still contribute to the code count.
+</li>
+<li> On Windows, cloc  will fail with <tt>Can't cd to ... No such file or
+directory at <embedded>/File/Find.pm</tt> if the code being scanned has
+file paths longer than 255 characters.  A work-around is to run cloc
+from the Windows Subsystem for Linux (WSL).
 </li>
 </ol>
 
 [](1}}})
 <a name="AdditionalLanguages"></a> []({{{1)
-#   [How to Request Support for Additional Languages &#9650;](#___top "click to go to top of document")
+#   [Requesting Support for Additional Languages &#9650;](#___top "click to go to top of document")
 
 If cloc does not recognize a language you are interested in counting,
 create a [GitHub issue](https://github.com/AlDanial/cloc/issues)
@@ -2705,22 +2904,63 @@ with `#!` style program invocations, explain what those are.</li>
 </ol>
 
 [](1}}})
-<a name="in_progress"></a> []({{{1)
-##  [Features Currently in Development &#9650;](#___top "click to go to top of document")
+<a name="reporting_problems"></a> []({{{1)
+#  [Reporting Problems &#9650;](#___top "click to go to top of document")
 
-Here, in no particular order and with no promise of future delivery, are
-features and capabilities currently in development:
+If you encounter a problem with cloc, first check to see if
+you're running with the latest version of the tool:
+<pre>
+  cloc --version
+</pre>
+If the version is older than the most recent release
+at https://github.com/AlDanial/cloc/releases, download the
+latest version and see if it solves your problem.
+
+If the problem happens with the latest release, submit
+a new issue at https://github.com/AlDanial/cloc/issues *only*
+if you can supply enough information for anyone reading the
+issue report to reproduce the problem.
+That means providing
 <ol>
-<li> produce reStructuredText output with `--rst`</li>
-<li> count code (e.g. Javascript) embedded in HTML files </li>
+<li> the operating system you're running on</li>
+<li> the cloc command with all options</li>
+<li> the code you are counting (URL to a public git repo or zip file or
+tar file, et cetera)</li>
 </ol>
+The last item is generally problematic.  If the code base is
+proprietary or amounts to more than a few dozen kilobytes,
+you'll need to try to reconstruct similar inputs or demonstrate
+the problem with an existing public code base.
 
-Pull requests for these features will receive extra consideration.
+Problem reports that cannot be reproduced will be ignored and
+eventually closed.
+
+[](1}}})
+<a name="citation"></a> []({{{1)
+#  [Citation &#9650;](#___top "click to go to top of document")
+
+Please use the following bibtex entry to cite cloc in a publication:
+
+<pre>
+@software{adanial_cloc,
+  author       = {Albert Danial},
+  title        = {cloc: v1.92},
+  month        = dec,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {v1.92},
+  doi          = {10.5281/zenodo.5760077},
+  url          = {https://doi.org/10.5281/zenodo.5760077}
+}
+</pre>
+
+(Update the version number and corresponding year if this
+entry is outdated.)
 
 [](1}}})
 <a name="Acknowledgments"></a> []({{{1)
 #   [Acknowledgments &#9650;](#___top "click to go to top of document")
-Wolfram Rösler provided most of the code examples in the test suite.
+[Wolfram Rösler](https://github.com/wolframroesler) provided most of the code examples in the test suite.
 These examples come from his [Hello World collection](http://helloworldcollection.de/).
 
 Ismet Kursunoglu found errors with the MUMPS counter and provided
@@ -2791,14 +3031,15 @@ provided the
 [Slovakian](http://newknowledgez.com/cloc.html) translation.
 
 Erik Gooven Arellano Casillas provided an update to the MXML counter to
-recognize Actionscript comments.
+recognize ActionScript comments.
 
 [Gianluca Casati](http://g14n.info) created the
 [cloc CPAN package](https://metacpan.org/pod/App::cloc).
 
+<!--- broken link
 Mary Stefanova provided the
 [Polish](http://www.trevister.com/blog/cloc.html)
-translation.
+translation. --->
 
 Ryan Lindeman implemented the `--by-percent` feature.
 
@@ -2824,9 +3065,10 @@ provided the
 [Romanian](http://www.bildelestore.dk/blog/cloc-contele-de-linii-de-cod/)
 translation.
 
+<!--- broken link
 The [Garcinia Cambogia Review Team](http://www.garciniacambogiareviews.ca/)
 provided the
-[Arabic translation](http://www.garciniacambogiareviews.ca/translations/aldanial-cloc/).
+[Arabic translation](http://www.garciniacambogiareviews.ca/translations/aldanial-cloc/). --->
 
 Gajk Melikyan provided the
 provided the

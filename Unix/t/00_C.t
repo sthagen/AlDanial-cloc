@@ -15,9 +15,24 @@ my @Tests = (
                     'args' => '../tests/inputs/RemoteSiteHelperTest.cls',
                 },
                 {
+                    'name' => 'APL',
+                    'ref'  => '../tests/outputs/rand.apl.yaml',
+                    'args' => '../tests/inputs/rand.apl',
+                },
+                {
                     'name' => 'AsciiDoc',
                     'ref'  => '../tests/outputs/asciidoctor.adoc.yaml',
                     'args' => '../tests/inputs/asciidoctor.adoc',
+                },
+                {
+                    'name' => 'ASP.NET 1',
+                    'ref'  => '../tests/outputs/page_layout.aspx.yaml',
+                    'args' => '../tests/inputs/page_layout.aspx',
+                },
+                {
+                    'name' => 'ASP.NET 2',
+                    'ref'  => '../tests/outputs/server_side.aspx.yaml',
+                    'args' => '../tests/inputs/server_side.aspx',
                 },
                 {
                     'name' => 'Assembly 1',
@@ -45,6 +60,21 @@ my @Tests = (
                     'args' => '../tests/inputs/C.g4',
                 },
                 {
+                    'name' => 'Bazel',
+                    'ref'  => '../tests/outputs/BUILD.yaml',
+                    'args' => '../tests/inputs/BUILD',
+                },
+                {
+                    'name' => 'BizTalk Orchestration',
+                    'ref'  => '../tests/outputs/ProcessPO.odx.yaml',
+                    'args' => '../tests/inputs/ProcessPO.odx',
+                },
+                {
+                    'name' => 'BizTalk Pipeline',
+                    'ref'  => '../tests/outputs/XmlToJSONSendPipeline.btp.yaml',
+                    'args' => '--unicode ../tests/inputs/XmlToJSONSendPipeline.btp',
+                },
+                {
                     'name' => 'Blade',
                     'ref'  => '../tests/outputs/master.blade.php.yaml',
                     'args' => '../tests/inputs/master.blade.php',
@@ -65,6 +95,11 @@ my @Tests = (
                     'ref'  => '../tests/outputs/C-Ansi.c.yaml',
                 },
                 {
+                    'name' => 'C# 1',
+                    'ref'  => '../tests/outputs/C#.cs.yaml',
+                    'args' => '../tests/inputs/C#.cs',
+                },
+                {
                     'name' => 'C# 2',
                     'ref'  => '../tests/outputs/wokka.cs.yaml',
                     'args' => '../tests/inputs/wokka.cs',
@@ -75,19 +110,24 @@ my @Tests = (
                     'args' => '../tests/inputs/assembly.cs',
                 },
                 {
+                    'name' => 'C# Designer',
+                    'ref'  => '../tests/outputs/csharp-designer.designer.cs.yaml',
+                    'args' => '../tests/inputs/csharp-designer.designer.cs',
+                },
+                {
                     'name' => 'C/C++ header',
                     'ref'  => '../tests/outputs/locale_facets.h.yaml',
                     'args' => '../tests/inputs/locale_facets.h',
                 },
                 {
+                    'name' => 'Cake Build Script',
+                    'ref'  => '../tests/outputs/build.cake.yaml',
+                    'args' => '../tests/inputs/build.cake',
+                },
+                {
                     'name' => 'Chapel',
                     'ref'  => '../tests/outputs/Chapel.chpl.yaml',
                     'args' => '../tests/inputs/Chapel.chpl',
-                },
-                {
-                    'name' => 'Cucumber',
-                    'ref'  => '../tests/outputs/cucumber.feature.yaml',
-                    'args' => '../tests/inputs/cucumber.feature',
                 },
                 {
                     'name' => 'Clean',
@@ -115,11 +155,6 @@ my @Tests = (
                     'args' => '../tests/inputs/ColdFusion.cfm',
                 },
                 {
-                    'name' => 'C#',
-                    'ref'  => '../tests/outputs/C#.cs.yaml',
-                    'args' => '../tests/inputs/C#.cs',
-                },
-                {
                     'name' => 'C++',
                     'ref'  => '../tests/outputs/C++-MFC.cc.yaml',
                     'args' => '../tests/inputs/C++-MFC.cc',
@@ -133,6 +168,21 @@ my @Tests = (
                     'name' => 'C simple',
                     'ref'  => '../tests/outputs/C-Ansi.c.yaml',
                     'args' => '../tests/inputs/C-Ansi.c',
+                },
+                {
+                    'name' => 'CSV',
+                    'ref'  => '../tests/outputs/cloc_counts.csv.yaml',
+                    'args' => '../tests/inputs/cloc_counts.csv',
+                },
+                {
+                    'name' => 'Cucumber',
+                    'ref'  => '../tests/outputs/cucumber.feature.yaml',
+                    'args' => '../tests/inputs/cucumber.feature',
+                },
+                {
+                    'name' => 'dhall',
+                    'ref'  => '../tests/outputs/Prelude.dhall.yaml',
+                    'args' => '../tests/inputs/Prelude.dhall',
                 },
                 {
                     'name' => 'DIET',
@@ -255,6 +305,11 @@ my @Tests = (
                     'args' => '../tests/inputs/glade-search-popover.ui',
                 },
                 {
+                    'name' => 'Gleam',
+                    'ref'  => '../tests/outputs/string.gleam.yaml',
+                    'args' => '../tests/inputs/string.gleam',
+                },
+                {
                     'name' => 'GLSL',
                     'ref'  => '../tests/outputs/blur.glsl.yaml',
                     'args' => '../tests/inputs/blur.glsl',
@@ -268,6 +323,16 @@ my @Tests = (
                     'name' => 'Go --no-autogen',
                     'ref'  => '../tests/outputs/hello_app.go-2.yaml',
                     'args' => '--no-autogen ../tests/inputs/hello_app*.go',
+                },
+                {
+                    'name' => 'Godot Resource',
+                    'ref'  => '../tests/outputs/door.tres.yaml',
+                    'args' => '../tests/inputs/door.tres',
+                },
+                {
+                    'name' => 'Godot Scene',
+                    'ref'  => '../tests/outputs/GamePanel.tscn.yaml',
+                    'args' => '../tests/inputs/GamePanel.tscn',
                 },
                 {
                     'name' => 'Groovy',
@@ -347,14 +412,34 @@ my @Tests = (
                     'args' => '../tests/inputs/igorpro.ipf',
                 },
                 {
+                    'name' => 'Jinja Templates',
+                    'ref'  => '../tests/outputs/child_template.jinja2.yaml',
+                    'args' => '../tests/inputs/child_template.jinja2',
+                },
+                {
                     'name' => 'Jupyter Notebook',
                     'ref'  => '../tests/outputs/Trapezoid_Rule.ipynb.yaml',
                     'args' => '../tests/inputs/Trapezoid_Rule.ipynb',
                 },
                 {
+                    'name' => 'Juniper Junos',
+                    'ref'  => '../tests/outputs/config.junos.yaml',
+                    'args' => '../tests/inputs/config.junos',
+                },
+                {
+                    'name' => 'Imba',
+                    'ref'  => '../tests/outputs/class.imba.yaml',
+                    'args' => '../tests/inputs/class.imba',
+                },
+                {
                     'name' => 'INI',
                     'ref'  => '../tests/outputs/wpedia.ini.yaml',
                     'args' => '../tests/inputs/wpedia.ini',
+                },
+                {
+                    'name' => 'IPL',
+                    'ref'  => '../tests/outputs/insertJournalEntry.ipl.yaml',
+                    'args' => '../tests/inputs/insertJournalEntry.ipl',
                 },
                 {
                     'name' => 'Java',
@@ -407,6 +492,21 @@ my @Tests = (
                     'args' => '../tests/inputs/Hello.lidr',
                 },
                 {
+                    'name' => 'LLVM IR',
+                    'ref'  => '../tests/outputs/DIEnumerator-10.0.ll.yaml',
+                    'args' => '../tests/inputs/DIEnumerator-10.0.ll',
+                },
+                {
+                    'name' => 'Logos 1',
+                    'ref'  => '../tests/outputs/logos.x.yaml',
+                    'args' => '../tests/inputs/logos.x',
+                },
+                {
+                    'name' => 'Logos 2',
+                    'ref'  => '../tests/outputs/logos.xm.yaml',
+                    'args' => '../tests/inputs/logos.xm',
+                },
+                {
                     'name' => 'Logtalk',
                     'ref'  => '../tests/outputs/logtalk.lgt.yaml',
                     'args' => '../tests/inputs/logtalk.lgt',
@@ -457,6 +557,26 @@ my @Tests = (
                     'args' => '../tests/inputs/Lanczos.m',
                 },
                 {
+                    'name' => 'MATLAB 3',
+                    'ref'  => '../tests/outputs/matlab_line_colors.m.yaml',
+                    'args' => '../tests/inputs/matlab_line_colors.m',
+                },
+                {
+                    'name' => 'Meson',
+                    'ref'  => '../tests/outputs/meson.build.yaml',
+                    'args' => '../tests/inputs/meson.build',
+                },
+                {
+                    'name' => 'Metal',
+                    'ref'  => '../tests/outputs/RenderTest.metal.yaml',
+                    'args' => '../tests/inputs/RenderTest.metal',
+                },
+                {
+                    'name' => 'Mojo',
+                    'ref'  => '../tests/outputs/Mojo.mojom.yaml',
+                    'args' => '../tests/inputs/Mojo.mojom',
+                },
+                {
                     'name' => 'Mumps',
                     'ref'  => '../tests/outputs/Mumps.mps.yaml',
                     'args' => '../tests/inputs/Mumps.mps',
@@ -487,9 +607,14 @@ my @Tests = (
                     'args' => '../tests/inputs/darwin-configuration.nix',
                 },
                 {
-                    'name' => 'Objective C',
+                    'name' => 'Objective-C',
                     'ref'  => '../tests/outputs/qsort_demo.m.yaml',
                     'args' => '../tests/inputs/qsort_demo.m',
+                },
+                {
+                    'name' => 'Odin',
+                    'ref'  => '../tests/outputs/demo.odin.yaml',
+                    'args' => '../tests/inputs/demo.odin',
                 },
                 {
                     'name' => 'Oracle PL/SQL',
@@ -532,21 +657,6 @@ my @Tests = (
                     'args' => '../tests/inputs/script1-hadoop.pig',
                 },
                 {
-                    'name' => 'ProGuard',
-                    'ref'  => '../tests/outputs/proguard-project-app.pro.yaml',
-                    'args' => '../tests/inputs/proguard-project-app.pro',
-                },
-                {
-                    'name' => 'Prolog',
-                    'ref'  => '../tests/outputs/birds.pro.yaml',
-                    'args' => '../tests/inputs/birds.pro',
-                },
-                {
-                    'name' => 'PO File',
-                    'ref'  => '../tests/outputs/en_AU.po.yaml',
-                    'args' => '../tests/inputs/en_AU.po',
-                },
-                {
                     'name' => 'PL/I',
                     'ref'  => '../tests/outputs/hello.pl1.yaml',
                     'args' => '../tests/inputs/hello.pl1',
@@ -557,9 +667,49 @@ my @Tests = (
                     'args' => '../tests/inputs/find.plm',
                 },
                 {
-                    'name' => 'Puppet',
+                    'name' => 'PlantUML',
+                    'ref'  => '../tests/outputs/plantuml.puml.yaml',
+                    'args' => '../tests/inputs/plantuml.puml',
+                },
+                {
+                    'name' => 'PO File',
+                    'ref'  => '../tests/outputs/en_AU.po.yaml',
+                    'args' => '../tests/inputs/en_AU.po',
+                },
+                {
+                    'name' => 'ProGuard',
+                    'ref'  => '../tests/outputs/proguard-project-app.pro.yaml',
+                    'args' => '../tests/inputs/proguard-project-app.pro',
+                },
+                {
+                    'name' => 'Prolog',
+                    'ref'  => '../tests/outputs/birds.pro.yaml',
+                    'args' => '../tests/inputs/birds.pro',
+                },
+                {
+                    'name' => 'Properties',
+                    'ref'  => '../tests/outputs/wiki.properties.yaml',
+                    'args' => '../tests/inputs/wiki.properties',
+                },
+                {
+                    'name' => 'Puppet class',
                     'ref'  => '../tests/outputs/modules1-ntp1.pp.yaml',
                     'args' => '../tests/inputs/modules1-ntp1.pp',
+                },
+                {
+                    'name' => 'Puppet function without arguments',
+                    'ref'  => '../tests/outputs/modules1-func1.pp.yaml',
+                    'args' => '../tests/inputs/modules1-func1.pp',
+                },
+                {
+                    'name' => 'Puppet function with arguments',
+                    'ref'  => '../tests/outputs/modules1-func2.pp.yaml',
+                    'args' => '../tests/inputs/modules1-func2.pp',
+                },
+                {
+                    'name' => 'Puppet typealias',
+                    'ref'  => '../tests/outputs/modules1-typealias.pp.yaml',
+                    'args' => '../tests/inputs/modules1-typealias.pp',
                 },
                 {
                     'name' => 'Python',
@@ -597,6 +747,16 @@ my @Tests = (
                     'args' => '../tests/inputs/md5.rkt',
                 },
                 {
+                    'name' => 'Ring',
+                    'ref'  => '../tests/outputs/tictactoe3d.ring.yaml',
+                    'args' => '../tests/inputs/tictactoe3d.ring',
+                },
+                {
+                    'name' => 'Raku',
+                    'ref'  => '../tests/outputs/prob060-andreoss.p6.yaml',
+                    'args' => '../tests/inputs/prob060-andreoss.p6',
+                },
+                {
                     'name' => 'RAML',
                     'ref'  => '../tests/outputs/helloworld.raml.yaml',
                     'args' => '../tests/inputs/helloworld.raml',
@@ -612,14 +772,19 @@ my @Tests = (
                     'args' => '../tests/inputs/LogMain.re',
                 },
                 {
+                    'name' => 'ReScript',
+                    'ref'  => '../tests/outputs/RedBlackTree.res.yaml',
+                    'args' => '../tests/inputs/RedBlackTree.res',
+                },
+                {
                     'name' => 'reStructuredText',
                     'ref'  => '../tests/outputs/reStructuredText.rst.yaml',
                     'args' => '../tests/inputs/reStructuredText.rst',
                 },
                 {
                     'name' => 'RobotFramework',
-                    'ref'  => '../tests/outputs/robotframework.tsv.yaml',
-                    'args' => '../tests/inputs/robotframework.tsv',
+                    'ref'  => '../tests/outputs/robotframework.robot.yaml',
+                    'args' => '../tests/inputs/robotframework.robot',
                 },
                 {
                     'name' => 'Rmd',
@@ -632,9 +797,19 @@ my @Tests = (
                     'args' => '../tests/inputs/messages.rb',
                 },
                 {
-                    'name' => 'Sass',
+                    'name' => 'SCSS',
                     'ref'  => '../tests/outputs/style.scss.yaml',
                     'args' => '../tests/inputs/style.scss',
+                },
+                {
+                    'name' => 'SaltStack',
+                    'ref'  => '../tests/outputs/certificates.sls.yaml',
+                    'args' => '../tests/inputs/certificates.sls',
+                },
+                {
+                    'name' => 'Scheme',
+                    'ref'  => '../tests/outputs/scheme.sls.yaml',
+                    'args' => '../tests/inputs/scheme.sls',
                 },
                 {
                     'name' => 'Starlark',
@@ -657,6 +832,11 @@ my @Tests = (
                     'args' => '../tests/inputs/captcha.cs',
                 },
                 {
+                    'name' => 'Smarty',
+                    'ref'  => '../tests/outputs/guestbook.tpl.yaml',
+                    'args' => '../tests/inputs/guestbook.tpl',
+                },
+                {
                     'name' => 'SparForte',
                     'ref'  => '../tests/outputs/hello.sp.yaml',
                     'args' => '../tests/inputs/hello.sp',
@@ -677,9 +857,24 @@ my @Tests = (
                     'args' => '../tests/inputs/specman_e2.e',
                 },
                 {
+                    'name' => 'Squirrel',
+                    'ref'  => '../tests/outputs/squirrel_table.nut.yaml',
+                    'args' => '../tests/inputs/squirrel_table.nut',
+                },
+                {
                     'name' => 'Stata',
                     'ref'  => '../tests/outputs/stata.do.yaml',
                     'args' => '../tests/inputs/stata.do',
+                },
+                {
+                    'name' => 'SugarSS',
+                    'ref'  => '../tests/outputs/rules.sss.yaml',
+                    'args' => '../tests/inputs/rules.sss',
+                },
+                {
+                    'name' => 'Svelte',
+                    'ref'  => '../tests/outputs/reactive.svelte.yaml',
+                    'args' => '../tests/inputs/reactive.svelte',
                 },
                 {
                     'name' => 'SVG',
@@ -717,6 +912,11 @@ my @Tests = (
                     'args' => '../tests/inputs/toml_example.toml',
                 },
                 {
+                    'name' => 'TNSDL',
+                    'ref'  => '../tests/outputs/tnsdl.sdl.yaml',
+                    'args' => '../tests/inputs/tnsdl.sdl',
+                },
+                {
                     'name' => 'TTCN',
                     'ref'  => '../tests/outputs/clusterConf.ttcn.yaml',
                     'args' => '../tests/inputs/clusterConf.ttcn',
@@ -742,6 +942,16 @@ my @Tests = (
                     'args' => '../tests/inputs/greeter.tsx',
                 },
                 {
+                    'name' => 'Umka',
+                    'ref'  => '../tests/outputs/fractal.um.yaml',
+                    'args' => '../tests/inputs/fractal.um',
+                },
+                {
+                    'name' => 'Vala',
+                    'ref'  => '../tests/outputs/gnureadline.vala.yaml',
+                    'args' => '../tests/inputs/gnureadline.vala',
+                },
+                {
                     'name' => 'VB.Net',
                     'ref'  => '../tests/outputs/VisualBasic.Net.vba.yaml',
                     'args' => '../tests/inputs/VisualBasic.Net.vba',
@@ -762,6 +972,11 @@ my @Tests = (
                     'args' => '../tests/inputs/JetCar.cls',
                 },
                 {
+                    'name' => 'Visual Studio Solution',
+                    'ref'  => '../tests/outputs/vs_solution.sln.yaml',
+                    'args' => '../tests/inputs/vs_solution.sln',
+                },
+                {
                     'name' => 'Vuejs Component',
                     'ref'  => '../tests/outputs/ItemView.vue.yaml',
                     'args' => '../tests/inputs/ItemView.vue',
@@ -770,6 +985,11 @@ my @Tests = (
                     'name' => 'WebAssembly',
                     'ref'  => '../tests/outputs/type.wast.yaml',
                     'args' => '../tests/inputs/type.wast',
+                },
+                {
+                    'name' => 'Web Services Description',
+                    'ref'  => '../tests/outputs/webservice.wsdl.yaml',
+                    'args' => '../tests/inputs/webservice.wsdl',
                 },
                 {
                     'name' => 'Windows Message',
@@ -790,6 +1010,16 @@ my @Tests = (
                     'name' => 'Windows Resource',
                     'ref'  => '../tests/outputs/ZosNet.rc.yaml',
                     'args' => '../tests/inputs/ZosNet.rc',
+                },
+                {
+                    'name' => 'WXML',
+                    'ref'  => '../tests/outputs/pages.wxml.yaml',
+                    'args' => '../tests/inputs/pages.wxml',
+                },
+                {
+                    'name' => 'WXSS',
+                    'ref'  => '../tests/outputs/pages.wxss.yaml',
+                    'args' => '../tests/inputs/pages.wxss',
                 },
                 {
                     'name' => 'xBase',
@@ -820,6 +1050,11 @@ my @Tests = (
                     'name' => 'Xtend',
                     'ref'  => '../tests/outputs/Xtend.xtend.yaml',
                     'args' => '../tests/inputs/Xtend.xtend',
+                },
+                {
+                    'name' => 'Zig',
+                    'ref'  => '../tests/outputs/zir_sema.zig.yaml',
+                    'args' => '../tests/inputs/zir_sema.zig',
                 },
             );
 

@@ -41,6 +41,20 @@ my @Tests = (
                 },
 
                 {
+                    'name' => 'diff commit with only deleted file',
+                    'args' => '--strip-str-comments --git --diff 04179b6 ae0d26e',
+                    'ref'  => '../tests/outputs/git_tests/04179b6_ae0d26e.yaml',
+                    'cd'   => 'cloc_submodule_test',
+                },
+
+                {
+                    'name' => 'diff commit with only added file',
+                    'args' => '--strip-str-comments --git --diff f15bf04 d9b6726',
+                    'ref'  => '../tests/outputs/git_tests/f15bf04_d9b6726.yaml',
+                    'cd'   => 'cloc_submodule_test',
+                },
+
+                {
                     'name' => 'count and diff part I',
                     'args' => '--strip-str-comments  --git --count-and-diff HEAD~1 HEAD',
                     'ref'  => '../tests/outputs/git_tests/count_and_diff.yaml.HEAD',
@@ -62,6 +76,13 @@ my @Tests = (
                     'ref'  => '../tests/outputs/git_tests/count_and_diff.yaml.diff.HEAD~1.HEAD',
                     'cd'   => 'cloc_submodule_test',
                     'results'  => 'results.yaml.diff.HEAD~1.HEAD',
+                },
+
+                {
+                    'name' => 'file size filter with --vcs, #599',
+                    'args' => '--vcs=git --max-file-size 0.0001 .',
+                    'ref'  => '../tests/outputs/issues/599/results.yaml',
+                    'cd'   => 'cloc_submodule_test',
                 },
 
             );
