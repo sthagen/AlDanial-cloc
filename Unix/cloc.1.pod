@@ -318,7 +318,7 @@ such as GNU autoconf.  To see a list of these files
 (then exit), run with B<--no-autogen list>
 See also B<--autoconf>.
 
-==item B<--original-dir>
+=item B<--original-dir>
 
 Only effective in combination with
 B<--strip-comments>.  Write the stripped files
@@ -521,7 +521,7 @@ see the recognized extensions.
 
 =item B<--include-lang=L1[,L2 ...]>
 
-Count only the given comma separated languages
+Count only the given comma separated, case-insensitive languages
 L1, L2, L3, et cetera.
 
 =item B<--match-d=REGEX>

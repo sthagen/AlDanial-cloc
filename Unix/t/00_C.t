@@ -180,6 +180,16 @@ my @Tests = (
                     'args' => '../tests/inputs/cucumber.feature',
                 },
                 {
+                    'name' => 'DenizenScript',
+                    'ref'  => '../tests/outputs/double_doors.dsc.yaml',
+                    'args' => '../tests/inputs/double_doors.dsc',
+                },
+                {
+                    'name' => 'Derw',
+                    'ref'  => '../tests/outputs/complex_union.derw.yaml',
+                    'args' => '../tests/inputs/complex_union.derw',
+                },
+                {
                     'name' => 'dhall',
                     'ref'  => '../tests/outputs/Prelude.dhall.yaml',
                     'args' => '../tests/inputs/Prelude.dhall',
@@ -295,6 +305,11 @@ my @Tests = (
                     'args' => '../tests/inputs/fsharp_script.fsx',
                 },
                 {
+                    'name' => 'Flatbuffers',
+                    'ref'  => '../tests/outputs/flatbuffers.fbs.yaml',
+                    'args' => '../tests/inputs/flatbuffers.fbs',
+                },
+                {
                     'name' => 'Gencat NLS',
                     'ref'  => '../tests/outputs/Gencat-NLS.msg.yaml',
                     'args' => '../tests/inputs/Gencat-NLS.msg',
@@ -325,14 +340,19 @@ my @Tests = (
                     'args' => '--no-autogen ../tests/inputs/hello_app*.go',
                 },
                 {
-                    'name' => 'Godot Resource',
-                    'ref'  => '../tests/outputs/door.tres.yaml',
-                    'args' => '../tests/inputs/door.tres',
-                },
-                {
                     'name' => 'Godot Scene',
                     'ref'  => '../tests/outputs/GamePanel.tscn.yaml',
                     'args' => '../tests/inputs/GamePanel.tscn',
+                },
+                {
+                    'name' => 'Godot Shaders',
+                    'ref'  => '../tests/outputs/example_2d.gdshader.yaml',
+                    'args' => '../tests/inputs/example_2d.gdshader',
+                },
+                {
+                    'name' => 'Godot Resource',
+                    'ref'  => '../tests/outputs/door.tres.yaml',
+                    'args' => '../tests/inputs/door.tres',
                 },
                 {
                     'name' => 'Groovy',
@@ -385,6 +405,11 @@ my @Tests = (
                     'name' => 'Hoon',
                     'ref'  => '../tests/outputs/arvo.hoon.yaml',
                     'args' => '../tests/inputs/arvo.hoon',
+                },
+                {
+                    'name' => 'HTML EEx',
+                    'ref'  => '../tests/outputs/html_heex_example.heex.yaml',
+                    'args' => '../tests/inputs/html_heex_example.heex',
                 },
                 {
                     'name' => 'IDL 1',
@@ -475,6 +500,11 @@ my @Tests = (
                     'name' => 'Lean',
                     'ref'  => '../tests/outputs/dlist.lean.yaml',
                     'args' => '../tests/inputs/dlist.lean',
+                },
+                {
+                    'name' => 'Lem',
+                    'ref'  => '../tests/outputs/machineDefFreshIds.lem.yaml',
+                    'args' => '../tests/inputs/machineDefFreshIds.lem',
                 },
                 {
                     'name' => 'LFE',
@@ -892,6 +922,11 @@ my @Tests = (
                     'args' => '../tests/inputs/swig_example.i',
                 },
                 {
+                    'name' => 'TableGen',
+                    'ref'  => '../tests/outputs/TableGen-ARM.yaml',
+                    'args' => '../tests/inputs/TableGen-ARM.td',
+                },
+                {
                     'name' => 'Tcl/Tk',
                     'ref'  => '../tests/outputs/Tk.yaml',
                     'args' => '../tests/inputs/Tk',
@@ -972,6 +1007,11 @@ my @Tests = (
                     'args' => '../tests/inputs/JetCar.cls',
                 },
                 {
+                    'name' => 'Visual Studio Module',
+                    'ref'  => '../tests/outputs/BasicPlane.Figures-Rectangle.ixx.yaml',
+                    'args' => '../tests/inputs/BasicPlane.Figures-Rectangle.ixx',
+                },
+                {
                     'name' => 'Visual Studio Solution',
                     'ref'  => '../tests/outputs/vs_solution.sln.yaml',
                     'args' => '../tests/inputs/vs_solution.sln',
@@ -1025,6 +1065,11 @@ my @Tests = (
                     'name' => 'xBase',
                     'ref'  => '../tests/outputs/harbour_xbase.prg.yaml',
                     'args' => '../tests/inputs/harbour_xbase.prg',
+                },
+                {
+                    'name' => 'X++',
+                    'ref'  => '../tests/outputs/X++.xpo.yaml',
+                    'args' => '../tests/inputs/X++.xpo',
                 },
                 {
                     'name' => 'XML',
