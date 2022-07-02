@@ -560,7 +560,7 @@ my @Tests = (
                 {
                     'name' => 'accept all file extensions in user-provided language definitions, #542',
                     'cd'   => '../tests/inputs/issues/542',
-                    'args' => '--read-lang-def txt_lang_def.txt txt_lang_def.txt',
+                    'args' => '--read-lang-def txt_lang_def.txtt txt_lang_def.txtt',
                     'ref'  => '../tests/outputs/issues/542/results.yaml',
                 },
 
@@ -660,6 +660,13 @@ my @Tests = (
                     'cd'   => '../tests/inputs/issues/644',
                     'args' => 'UInt8.cs',
                     'ref'  => '../tests/outputs/issues/644/results.yaml',
+                },
+
+                {
+                    'name' => '--no-recurse, #657',
+                    'cd'   => '../tests/inputs/issues/657',
+                    'args' => '--no-recurse .',
+                    'ref'  => '../tests/outputs/issues/657/results.yaml',
                 },
 
             );

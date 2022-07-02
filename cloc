@@ -362,6 +362,8 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
                              such as GNU autoconf.  To see a list of these files
                              (then exit), run with --no-autogen list
                              See also --autoconf.
+   --no-recurse              Count files in the given directories without
+                             recursively descending below them.
    --original-dir            [Only effective in combination with
                              --strip-comments]  Write the stripped files
                              to the same directory as the original files.
@@ -751,6 +753,7 @@ my (
     $opt_stat                 ,
     $opt_summary_cutoff       ,
     $opt_skip_leading         ,
+    $opt_no_recurse           ,
    );
 
 my $getopt_success = GetOptions(             # {{{1
@@ -850,6 +853,7 @@ my $getopt_success = GetOptions(             # {{{1
    "stat"                                    => \$opt_stat                ,
    "summary_cutoff|summary-cutoff=s"         => \$opt_summary_cutoff      ,
    "skip_leading|skip-leading:s"             => \$opt_skip_leading        ,
+   "no_recurse|no-recurse"                   => \$opt_no_recurse          ,
   );
 # 1}}}
 $config_file = $opt_config_file if defined $opt_config_file;
@@ -1150,6 +1154,10 @@ if (!$opt_diff_list_file) {
 trick_pp_packer_encode() if $ON_WINDOWS and $opt_file_encoding;
 $File::Find::dont_use_nlink = 1 if $opt_stat or top_level_SMB_dir(\@ARGV);
 my @git_similarity = (); # only populated with --git-diff-simindex
+my %git_metadata   = ();
+get_git_metadata(\@ARGV, \%git_metadata) if $opt_force_git;
+#use Data::Dumper;
+#print Dumper(\%git_metadata);
 replace_git_hash_with_tarfile(\@ARGV, \@git_similarity);
 # 1}}}
 # Step 1:  Initialize global constants.        {{{1
@@ -3327,6 +3335,16 @@ sub xml_yaml_or_json_header {                # {{{1
         $header .= "\n$report_file"
             if $opt_report_file;
         $header .= "\n</header>";
+        if (%git_metadata) {
+            foreach my $target (keys %git_metadata) {
+                $header .= "\n<source>";
+                $header .= "\n  <target>$target</target>";
+                $header .= "\n  <origin>$git_metadata{$target}{'origin'}</origin>";
+                $header .= "\n  <branch>$git_metadata{$target}{'branch'}</branch>";
+                $header .= "\n  <commit>$git_metadata{$target}{'commit'}</commit>";
+                $header .= "\n</source>";
+            }
+        }
     } elsif ($opt_yaml or $opt_json) {
         my ($Q, $open_B, $close_B, $start, $C) = yaml_to_json_separators();
         $header = "${start}${Q}header${Q} : $open_B
@@ -4865,6 +4883,27 @@ sub top_level_SMB_dir {                      # {{{1
     return 0;
 }
 # 1}}}
+sub get_git_metadata {                       # {{{1
+    my ($ra_arg_list,             # in  file name, directory name and/or
+                                  #     git commit hash to examine
+        $rh_git_metadata) = @_;   # out repo info
+    # Capture git information where possible--origin, branch, commit hash.
+    my $prt_args = join(",", @{$ra_arg_list});
+    print "-> get_git_metadata($prt_args)\n" if $opt_v > 2;
+    foreach my $arg (@{$ra_arg_list}) {
+        next if -f $arg;
+        my $origin = `git remote get-url origin 2>&1`;
+        next if $origin =~ /^fatal:/;
+        chomp($rh_git_metadata->{$arg}{"origin"} = $origin);
+        chomp($rh_git_metadata->{$arg}{"branch"} = `git symbolic-ref --short HEAD`);
+        if (-d $arg) {
+            chomp($rh_git_metadata->{$arg}{"commit"}   = `git rev-parse HEAD`);
+        } else {
+            chomp($rh_git_metadata->{$arg}{"commit"}   = `git rev-parse $arg`);
+        }
+    }
+    print "<- get_git_metadata()\n" if $opt_v > 2;
+} # 1}}}
 sub replace_git_hash_with_tarfile {          # {{{1
     my ($ra_arg_list,             # in  file name, directory name and/or
                                   #     git commit hash to examine
@@ -5324,9 +5363,15 @@ sub make_file_list {                         # {{{1
             $Ignored{$D} = "--exclude-dir=$Exclude_Dir{$dir}";
             next;
         }
-        find({wanted     => \&files            ,
-              preprocess => \&find_preprocessor,
-              follow     =>  $opt_follow_links }, $dir);
+        if ($opt_no_recurse) {
+            opendir(DIR, $dir);
+            push @file_list, grep(-f $_, readdir(DIR));
+            closedir(DIR);
+        } else {
+            find({wanted     => \&files            ,
+                  preprocess => \&find_preprocessor,
+                  follow     =>  $opt_follow_links }, $dir);
+        }
     }
     if ($opt_follow_links) {
         # giving { 'follow' => 1 } to find() makes it skip the
@@ -8266,6 +8311,8 @@ sub set_constants {                          # {{{1
 #           'cls'         => 'TeX'                   ,
             'dtx'         => 'TeX'                   ,
             'bst'         => 'TeX'                   ,
+            'txt'         => 'Text'                  ,
+            'text'        => 'Text'                  ,
             'tres'        => 'Godot Resource'        ,
             'tscn'        => 'Godot Scene'           ,
             'thrift'      => 'Thrift'                ,
@@ -9713,6 +9760,9 @@ sub set_constants {                          # {{{1
                                 [ 'remove_matches'      , '^\s*%'  ],
                                 [ 'remove_inline'       , '%.*$'   ],
                             ],
+    'Text'               => [
+                                [ 'remove_matches'      , '^\s*$'  ],
+                            ],
     'Thrift'             => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
@@ -10072,6 +10122,7 @@ sub set_constants {                          # {{{1
    'bdf'       => 1,
    'bmp'       => 1,
    'bz2'       => 1,  # bzip2(1) compressed file
+   'csv'       => 1,
    'desktop'   => 1,
    'dic'       => 1,
    'doc'       => 1,
@@ -10080,6 +10131,7 @@ sub set_constants {                          # {{{1
    'fig'       => 1,
    'gif'       => 1,
    'gz'        => 1,
+   'h5'        => 1,  # hierarchical data format
    'hdf'       => 1,  # hierarchical data format
    'in'        => 1,  # Debatable.
    'jpg'       => 1,
@@ -10094,20 +10146,22 @@ sub set_constants {                          # {{{1
    'pdf'       => 1,
    'pfb'       => 1,
    'png'       => 1,
+   'ppt'       => 1,
+   'pptx'      => 1,
    'ps'        => 1,  # Postscript is _USUALLY_ generated automatically.
    'sgm'       => 1,
    'sgml'      => 1,
    'so'        => 1,  # Dynamically-loaded object code.
    'Tag'       => 1,
-   'text'      => 1,
    'tfm'       => 1,
    'tgz'       => 1,  # gzipped tarball
    'tiff'      => 1,
    'tsv'       => 1,  # tab separated values
-   'txt'       => 1,
    'vf'        => 1,
    'wav'       => 1,
    'xbm'       => 1,
+   'xls'       => 1,
+   'xlsx'      => 1,
    'xpm'       => 1,
    'Y'         => 1,  # file compressed with "Yabba"
    'Z'         => 1,  # file compressed with "compress"
@@ -10726,6 +10780,7 @@ sub set_constants {                          # {{{1
     'Teamcenter met'               =>   1.00,
     'Teamcenter mth'               =>   1.00,
     'TeX'                          =>   1.50,
+    'Text'                         =>   0.50,
     'telon'                        =>   5.00,
     'tessaract'                    =>   2.00,
     'the twin'                     =>  13.33,
@@ -17194,3 +17249,4 @@ file:  33188   33206
 dir :  16832   16895
 link:  33261   33206
 pipe:   4544    null
+if ($opt_vcs eq "git" or $opt_force_git);
