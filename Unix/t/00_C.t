@@ -165,6 +165,11 @@ my @Tests = (
                     'args' => '../tests/inputs/C++-uppercase.CPP',
                 },
                 {
+                    'name' => 'Carbon',
+                    'ref'  => '../tests/outputs/variable_length.carbon.yaml',
+                    'args' => '../tests/inputs/variable_length.carbon',
+                },
+                {
                     'name' => 'C simple',
                     'ref'  => '../tests/outputs/C-Ansi.c.yaml',
                     'args' => '../tests/inputs/C-Ansi.c',
@@ -410,6 +415,11 @@ my @Tests = (
                     'name' => 'HCL',
                     'ref'  => '../tests/outputs/nomad_job.hcl.yaml',
                     'args' => '../tests/inputs/nomad_job.hcl',
+                },
+                {
+                    'name' => 'HolyC',
+                    'ref'  => '../tests/outputs/Once.HC.yaml',
+                    'args' => '../tests/inputs/Once.HC',
                 },
                 {
                     'name' => 'Hoon',
@@ -965,6 +975,11 @@ my @Tests = (
                     'name' => 'Tcl/Tk',
                     'ref'  => '../tests/outputs/Tk.yaml',
                     'args' => '../tests/inputs/Tk',
+                },
+                {
+                    'name' => 'TEAL',
+                    'ref'  => '../tests/outputs/htlc.teal.yaml',
+                    'args' => '../tests/inputs/htlc.teal',
                 },
                 {
                     'name' => 'TeX',
