@@ -270,7 +270,7 @@ my @Tests = (
                     'args' => '../tests/inputs/capture.ecr',
                 },
                 {
-                    'name' => 'Fennel',    
+                    'name' => 'Fennel',
                     'ref'  => '../tests/outputs/generate.fnl.yaml',
                     'args' => '../tests/inputs/generate.fnl',
                 },
@@ -742,6 +742,11 @@ my @Tests = (
                     'args' => '../tests/inputs/sdp_parser.peggy',
                 },
                 {
+                    'name' => 'Pest',
+                    'ref'  => '../tests/outputs/toml.pest.yaml',
+                    'args' => '../tests/inputs/toml.pest',
+                },
+                {
                     'name' => 'tspeg 1',
                     'ref'  => '../tests/outputs/sdp_parser.tspeg.yaml',
                     'args' => '../tests/inputs/sdp_parser.tspeg',
@@ -785,6 +790,16 @@ my @Tests = (
                     'name' => 'PO File',
                     'ref'  => '../tests/outputs/en_AU.po.yaml',
                     'args' => '../tests/inputs/en_AU.po',
+                },
+                {
+                    'name' => 'Pony (--docstring-as-code)',
+                    'ref'  => '../tests/outputs/ring.pony.1.yaml',
+                    'args' => '--docstring-as-code ../tests/inputs/ring.pony',
+                },
+                {
+                    'name' => 'Pony',
+                    'ref'  => '../tests/outputs/ring.pony.2.yaml',
+                    'args' => '../tests/inputs/ring.pony',
                 },
                 {
                     'name' => 'ProGuard',
