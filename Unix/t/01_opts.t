@@ -690,6 +690,20 @@ my @Tests = (
                     'ref'  => '../tests/outputs/issues/701/results.yaml',
                 },
 
+                {
+                    'name' => '--only-count-files, #708',
+                    'cd'   => '../tests/inputs/dd',
+                    'args' => '--only-count-files .',
+                    'ref'  => '../tests/outputs/issues/708/results.yaml',
+                },
+
+                {
+                    'name' => '--diff-list-file w/unknown lang, #710',
+                    'cd'   => '../tests/inputs/issues/710',
+                    'args' => '--diff-list-file test_files.list',
+                    'ref'  => '../tests/outputs/issues/710/results.yaml',
+                },
+
             );
 
 # Special cases:
