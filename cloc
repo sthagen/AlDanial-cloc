@@ -8,14 +8,17 @@
 #     http://www.dwheeler.com/sloccount/
 #     by David Wheeler.
 #   - Regexp::Common v2017060201
-#     http://search.cpan.org/~abigail/Regexp-Common-2017060201/lib/Regexp/Common.pm
+#     https://metacpan.org/pod/Regexp::Common
 #     by Damian Conway and Abigail.
-#   - Win32::Autoglob
-#     http://search.cpan.org/~sburke/Win32-Autoglob-1.01/Autoglob.pm
+#   - Win32::Autoglob 1.01
+#     https://metacpan.org/pod/Win32::Autoglob
 #     by Sean M. Burke.
-#   - Algorithm::Diff
-#     http://search.cpan.org/~tyemq/Algorithm-Diff-1.1902/lib/Algorithm/Diff.pm
+#   - Algorithm::Diff 1.1902
+#     https://metacpan.org/pod/Algorithm::Diff
 #     by Tye McQueen.
+#   - Text::Glob 0.11
+#     https://metacpan.org/pod/Text::Glob
+#     by Richard Clamp.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -487,6 +490,8 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
                              See also --unix, --show-os.
 
  ${BB}Filter Options${NN}
+   --include-content=<regex> Only count files containing text that matches the
+                             given regular expression.
    --exclude-content=<regex> Exclude files containing text that matches the given
                              regular expression.
    --exclude-dir=<D1>[,D2,]  Exclude the given comma separated directories
@@ -703,6 +708,7 @@ my (
     $opt_v                    ,
     $opt_vcs                  ,
     $opt_version              ,
+    $opt_include_content      ,
     $opt_exclude_content      ,
     $opt_exclude_lang         ,
     $opt_exclude_list_file    ,
@@ -788,6 +794,7 @@ my $getopt_success = GetOptions(             # {{{1
    "counted=s"                               => \$opt_counted             ,
    "include_ext|include-ext=s"               => \$opt_include_ext         ,
    "include_lang|include-lang=s"             => \$opt_include_lang        ,
+   "include_content|include-content=s"       => \$opt_include_content     ,
    "exclude_content|exclude-content=s"       => \$opt_exclude_content     ,
    "exclude_lang|exclude-lang=s"             => \$opt_exclude_lang        ,
    "exclude_dir|exclude-dir=s"               => \$opt_exclude_dir         ,
@@ -891,6 +898,7 @@ load_from_config_file($config_file,          # {{{2
                                                 \$opt_counted             ,
                                                 \$opt_include_ext         ,
                                                 \$opt_include_lang        ,
+                                                \$opt_include_content     ,
                                                 \$opt_exclude_content     ,
                                                 \$opt_exclude_lang        ,
                                                 \$opt_exclude_dir         ,
@@ -1784,6 +1792,10 @@ foreach my $FH (@fh) {  # loop over each pair of file sets
         exclude_by_regex($opt_exclude_content,              # in
                         \%{$unique_source_file{$FH}},       # in/out
                         \%Ignored);                         # out
+    } elsif ($opt_include_content) {
+        include_by_regex($opt_include_content,              # in
+                        \%{$unique_source_file{$FH}},       # in/out
+                        \%Ignored);                         # out
     }
 
     if ($opt_include_lang) {
@@ -2045,6 +2057,10 @@ if ($opt_exclude_content) {
     exclude_by_regex($opt_exclude_content,              # in
                     \%unique_source_file ,              # in/out
                     \%Ignored);                         # out
+} elsif ($opt_include_content) {
+    include_by_regex($opt_include_content,              # in
+                    \%unique_source_file ,              # in/out
+                    \%Ignored);                         # out
 }
 printf "%8d unique file%s.                              \n",
     plural_form(scalar keys %unique_source_file)
@@ -2261,6 +2277,29 @@ sub exclude_by_regex {                       # {{{1
         delete $rh_unique_source_file->{$file};
     }
 } # 1}}}
+sub include_by_regex {                       # {{{1
+    my ($regex,
+        $rh_unique_source_file, # in/out
+        $rh_ignored           , # out
+       ) = @_;
+    my @exclude = ();
+    foreach my $file (keys %{$rh_unique_source_file}) {
+        my $keep_this_one = 0;
+        foreach my $line (read_file($file)) {
+            if ($line =~ /$regex/) {
+                $keep_this_one = 1;
+                last;
+            }
+        }
+        if (!$keep_this_one) {
+            $rh_ignored->{$file} = "does not satisfy --include-content=$regex";
+            push @exclude, $file;
+        }
+    }
+    foreach my $file (@exclude) {
+        delete $rh_unique_source_file->{$file};
+    }
+} # 1}}}
 sub get_max_processes {                      # {{{1
     # If user has specified valid number of processes, use that.
     if (defined $opt_processes) {
@@ -2318,7 +2357,7 @@ sub get_max_processes {                      # {{{1
     return 0;
 } # 1}}}
 sub exclude_autogenerated_files {            # {{{1
-    my ($ra_file_list, # in
+    my ($ra_file_list, # in/out
         $rh_Err      , # in   hash of error codes
         $raa_errors  , # out
         $rh_Ignored  , # out
@@ -2340,7 +2379,38 @@ sub exclude_autogenerated_files {            # {{{1
         }
     }
     @{$ra_file_list} = @file_list_minus_autogen;
+
+    if ($opt_force_git) {
+        my $repo_dir = git_root_dir();
+        my @file_list_minus_linguist = ();
+        # if there's a .gitattributes file, look for linguist-generated
+        # and linguist-vendored entries to ignore
+        my $GA = ".gitattributes";
+        if (-f $GA) {
+            foreach my $line (read_file($GA)) {
+                next unless $line =~ /^(.*?)\s+(linguist-(vendored|generated))/;
+                my $pattern = $1;
+                $pattern =~ s/^"(.*?)"$/$1/;
+                foreach my $file (@{$ra_file_list}) {
+                    my $full_path = File::Spec->catfile( $repo_dir, $file );
+                    if (match_glob("$repo_dir/$pattern", $full_path)) {
+                        $rh_Ignored->{$file} = "$GA $line";
+                    } else {
+                        push @file_list_minus_linguist, $file;
+                    }
+                }
+            }
+        }
+    }
     print "<- exclude_autogenerated_files()\n" if $opt_v > 2;
+} # 1}}}
+sub git_root_dir {                           # {{{1
+    # if in a git repo, return the repo's top level directory
+    my $cmd = "git rev-parse --show-toplevel";
+    print $cmd, "\n" if $1;
+    my $dir = undef;
+    chomp($dir = `$cmd`);
+    die "Not in a git repository" unless $dir
 } # 1}}}
 sub file_extension {                         # {{{1
     my ($fname, ) = @_;
@@ -8261,6 +8331,8 @@ sub set_constants {                          # {{{1
             'mps'         => 'MUMPS'                 ,
             'mth'         => 'Teamcenter mth'        ,
             'n'           => 'Nemerle'               ,
+            'nlogo'       => 'NetLogo'               ,
+            'nls'         => 'NetLogo'               ,
             'nims'        => 'Nim'                   ,
             'nimrod'      => 'Nim'                   ,
             'nimble'      => 'Nim'                   ,
@@ -9624,6 +9696,10 @@ sub set_constants {                          # {{{1
 #                               [ 'call_regexp_common'  , 'C'      ],
                                 [ 'remove_inline'       , '#.*$'   ],
                             ],
+    'NetLogo'            => [
+                                [ 'remove_matches'      , '^\s*;'  ],
+                                [ 'remove_inline'       , ';.*$'   ],
+                            ],
     'Nix'                => [
                                 [ 'call_regexp_common'  , 'C'      ],
                                 [ 'remove_matches'      , '^\s*#'  ],
@@ -10734,6 +10810,7 @@ sub set_constants {                          # {{{1
     'Mustache'                     =>   1.75,
     'Nastran'                      =>   1.13,
     'Nemerle'                      =>   2.50,
+    'NetLogo'                      =>   4.00,
     'Nim'                          =>   2.00,
     'Nix'                          =>   2.70,
     'Nunjucks'                     =>   1.5 ,
@@ -13468,6 +13545,7 @@ sub load_from_config_file {                  # {{{1
                                                  $rs_counted             ,
                                                  $rs_include_ext         ,
                                                  $rs_include_lang        ,
+                                                 $rs_include_content     ,
                                                  $rs_exclude_content     ,
                                                  $rs_exclude_lang        ,
                                                  $rs_exclude_dir         ,
@@ -13578,6 +13656,7 @@ sub load_from_config_file {                  # {{{1
         } elsif (!defined ${$rs_counted}             and /^counted(=|\s+)(.*?)$/)                             { ${$rs_counted}            = $2;
         } elsif (!defined ${$rs_include_ext}         and /^(?:include_ext|include-ext)(=|\s+)(.*?)$/)         { ${$rs_include_ext}        = $2;
         } elsif (!defined ${$rs_include_lang}        and /^(?:include_lang|include-lang)(=|\s+)(.*?)$/)       { ${$rs_include_lang}       = $2;
+        } elsif (!defined ${$rs_include_content}     and /^(?:include_content|include-content)(=|\s+)(.*?)$/) { ${$rs_include_content}    = $2;
         } elsif (!defined ${$rs_exclude_content}     and /^(?:exclude_content|exclude-content)(=|\s+)(.*?)$/) { ${$rs_exclude_content}    = $2;
         } elsif (!defined ${$rs_exclude_lang}        and /^(?:exclude_lang|exclude-lang)(=|\s+)(.*?)$/)       { ${$rs_exclude_lang}       = $2;
         } elsif (!defined ${$rs_exclude_dir}         and /^(?:exclude_dir|exclude-dir)(=|\s+)(.*?)$/)         { ${$rs_exclude_dir}        = $2;
@@ -13746,6 +13825,87 @@ sub write_null_results {                     # {{{
     }
     print "<- write_null_results\n" if $opt_v > 2;
 } # }}}
+# code from Text::Glob {{{1
+sub glob_to_regex {
+    my $glob = shift;
+    my $regex = glob_to_regex_string($glob);
+    return qr/^$regex$/;
+}
+
+sub glob_to_regex_string
+{
+    my $glob = shift;
+    my $strict_leading_dot = 1;
+    my $strict_wildcard_slash = 1;
+
+    my $seperator = "/"; # unless defined $seperator;
+    $seperator = quotemeta($seperator);
+
+    my ($regex, $in_curlies, $escaping);
+    local $_;
+    my $first_byte = 1;
+    for ($glob =~ m/(.)/gs) {
+        if ($first_byte) {
+            if ($strict_leading_dot) {
+                $regex .= '(?=[^\.])' unless $_ eq '.';
+            }
+            $first_byte = 0;
+        }
+        if ($_ eq '/') {
+            $first_byte = 1;
+        }
+        if ($_ eq '.' || $_ eq '(' || $_ eq ')' || $_ eq '|' ||
+            $_ eq '+' || $_ eq '^' || $_ eq '$' || $_ eq '@' || $_ eq '%' ) {
+            $regex .= "\\$_";
+        }
+        elsif ($_ eq '*') {
+            $regex .= $escaping ? "\\*" :
+              $strict_wildcard_slash ? "(?:(?!$seperator).)*" : ".*";
+        }
+        elsif ($_ eq '?') {
+            $regex .= $escaping ? "\\?" :
+              $strict_wildcard_slash ? "(?!$seperator)." : ".";
+        }
+        elsif ($_ eq '{') {
+            $regex .= $escaping ? "\\{" : "(";
+            ++$in_curlies unless $escaping;
+        }
+        elsif ($_ eq '}' && $in_curlies) {
+            $regex .= $escaping ? "}" : ")";
+            --$in_curlies unless $escaping;
+        }
+        elsif ($_ eq ',' && $in_curlies) {
+            $regex .= $escaping ? "," : "|";
+        }
+        elsif ($_ eq "\\") {
+            if ($escaping) {
+                $regex .= "\\\\";
+                $escaping = 0;
+            }
+            else {
+                $escaping = 1;
+            }
+            next;
+        }
+        else {
+            $regex .= $_;
+            $escaping = 0;
+        }
+        $escaping = 0;
+    }
+    #print "# $glob $regex\n" if debug;
+
+    return $regex;
+}
+
+sub match_glob {
+    #print "# ", join(', ', map { "'$_'" } @_), "\n" if debug;
+    my $glob = shift;
+    my $regex = glob_to_regex $glob;
+    local $_;
+    grep { $_ =~ $regex } @_;
+}
+# 1}}}
 # really_is_pascal, really_is_incpascal, really_is_php from SLOCCount
 my %php_files    = ();  # really_is_php()
 sub really_is_pascal {                       # {{{1
