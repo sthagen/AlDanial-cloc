@@ -1995,6 +1995,12 @@ if ($opt_by_file) {
 # 1}}}
 } else {
 # Step 4:  Separate code from non-code files.  {{{1
+if ($opt_exclude_list_file) {
+    # note: process_exclude_list_file() references global @file_list
+    process_exclude_list_file($opt_exclude_list_file,
+                             \%Exclude_Dir,
+                             \%Ignored);
+}
 my $fh = 0;
 if ($opt_list_file or $opt_diff_list_files or $opt_vcs) {
     my @list;
@@ -2010,12 +2016,6 @@ if ($opt_list_file or $opt_diff_list_files or $opt_vcs) {
     $fh = make_file_list(\@ARGV, 0, \%Error_Codes, \@Errors, \%Ignored);
     #     make_file_list populates global variable @file_list via call to
     #     File::Find's find() which in turn calls files()
-}
-if ($opt_exclude_list_file) {
-    # note: process_exclude_list_file() references global @file_list
-    process_exclude_list_file($opt_exclude_list_file,
-                             \%Exclude_Dir,
-                             \%Ignored);
 }
 if ($opt_skip_win_hidden and $ON_WINDOWS) {
     my @file_list_minus_hidden = ();
@@ -5929,7 +5929,9 @@ sub files {                                  # {{{1
         if ($opt_match_f    ) { return unless /$opt_match_f/;     }
         if (@opt_not_match_f) { return if     any_match($_, 0, \$rule, @opt_not_match_f)}
     }
-    if ($opt_match_d    ) { return unless $Dir =~ m{$opt_match_d}     }
+    if ($opt_match_d) {
+        return unless "$Dir/" =~ m{$opt_match_d} or $Dir =~ m{$opt_match_d};
+    }
 
     my $nBytes = get_size($_);
     if (!$nBytes and is_file($File::Find::name)) {
@@ -8000,14 +8002,19 @@ sub set_constants {                          # {{{1
             'idc'         => 'C'                     ,
             'cats'        => 'C'                     ,
             'c'           => 'C'                     ,
-            'tpp'         => 'C++'                   ,
-            'tcc'         => 'C++'                   ,
-            'ipp'         => 'C++'                   ,
-            'inl'         => 'C++'                   ,
-            'h++'         => 'C++'                   ,
+            'c++'         => 'C++'                   ,
             'C'           => 'C++'                   ,
             'cc'          => 'C++'                   ,
-            'c++'         => 'C++'                   ,
+            'ccm'         => 'C++'                   ,
+            'c++m'        => 'C++'                   ,
+            'cppm'        => 'C++'                   ,
+            'cxxm'        => 'C++'                   ,
+            'h++'         => 'C++'                   ,
+            'inl'         => 'C++'                   ,
+            'ipp'         => 'C++'                   ,
+            'ixx'         => 'C++'                   ,
+            'tcc'         => 'C++'                   ,
+            'tpp'         => 'C++'                   ,
             'ccs'         => 'CCS'                   ,
             'cfc'         => 'ColdFusion CFScript'   ,
             'cfml'        => 'ColdFusion'            ,
@@ -8229,7 +8236,6 @@ sub set_constants {                          # {{{1
             'il'          => 'SKILL'                 ,
             'ils'         => 'SKILL++'               ,
             'inc'         => 'PHP/Pascal'            , # might be PHP or Pascal
-            'inl'         => 'C++'                   ,
             'ino'         => 'Arduino Sketch'        ,
             'ipf'         => 'Igor Pro'              ,
             'pde'         => 'Arduino Sketch'        , # pre 1.0
@@ -8365,7 +8371,6 @@ sub set_constants {                          # {{{1
             'wixproj'     => 'MSBuild script'        ,
             'btproj'      => 'MSBuild script'        ,
             'msbuild'     => 'MSBuild script'        ,
-            'ixx'         => 'Visual Studio Module'  ,
             'sln'         => 'Visual Studio Solution',
             'mps'         => 'MUMPS'                 ,
             'mth'         => 'Teamcenter mth'        ,
