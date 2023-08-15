@@ -165,6 +165,11 @@ my @Tests = (
                     'args' => '../tests/inputs/Cobol.cbl',
                 },
                 {
+                    'name' => 'CoCoA 5',
+                    'ref'  => '../tests/outputs/Buchberger.cocoa5.yaml',
+                    'args' => '../tests/inputs/Buchberger.cocoa5',
+                },
+                {
                     'name' => 'ColdFusion',
                     'ref'  => '../tests/outputs/ColdFusion.cfm.yaml',
                     'args' => '../tests/inputs/ColdFusion.cfm',
@@ -1115,6 +1120,11 @@ my @Tests = (
                     'name' => 'TypeScript 4',
                     'ref'  => '../tests/outputs/greeter.tsx.yaml',
                     'args' => '../tests/inputs/greeter.tsx',
+                },
+                {
+                    'name' => 'Typst',
+                    'ref'  => '../tests/outputs/notes.typ.yaml',
+                    'args' => '../tests/inputs/notes.typ',
                 },
                 {
                     'name' => 'Umka',

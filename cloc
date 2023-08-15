@@ -5552,7 +5552,10 @@ sub make_file_list {                         # {{{1
             if ($ON_WINDOWS and $HAVE_Win32_Long_Path) {
                 my $d = Win32::LongPath->new();
                 $d->opendirL($dir);
-                push @file_list, grep(is_file($_), $d->readdirL());
+                foreach my $entry ($d->readdirL()) {
+                    my $F = "$dir/$entry";
+                    push @file_list, $F if is_file($F);
+                }
                 $d->closedirL();
             } else {
                 opendir(DIR, $dir);
@@ -8037,6 +8040,10 @@ sub set_constants {                          # {{{1
             'cmake'       => 'CMake'                 ,
             'cob'         => 'COBOL'                 ,
             'COB'         => 'COBOL'                 ,
+            'cocoa5'      => 'CoCoA 5'               ,
+            'c5'          => 'CoCoA 5'               ,
+            'cpkg5'       => 'CoCoA 5'               ,
+            'cocoa5server'=> 'CoCoA 5'               ,
             'iced'        => 'CoffeeScript'          ,
             'cjsx'        => 'CoffeeScript'          ,
             'cakefile'    => 'CoffeeScript'          ,
@@ -8671,6 +8678,7 @@ sub set_constants {                          # {{{1
             'tsx'         => 'TypeScript'            ,
             'tss'         => 'Titanium Style Sheet'  ,
             'twig'        => 'Twig'                  ,
+            'typ'         => 'Typst'                 ,
             'um'          => 'Umka'                  ,
             'ui'          => 'Qt/Glade'              ,
             'glade'       => 'Glade'                 ,
@@ -9145,6 +9153,13 @@ sub set_constants {                          # {{{1
                                 [ 'remove_matches'      , '^\s*$'  ],
                             ], # included simply to allow diff's
     'COBOL'              => [   [ 'remove_cobol_comments',         ], ],
+    'CoCoA 5'            => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                                [ 'remove_matches'      , '^\s*--' ],
+                                [ 'remove_inline'       , '--.*$'  ],
+                            ],
     'CoffeeScript'       => [
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
@@ -10240,6 +10255,11 @@ sub set_constants {                          # {{{1
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
                                 [ 'call_regexp_common'  , 'C++'    ],
                             ],
+    'Typst'              => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                            ],
     'Umka'               => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
@@ -10717,8 +10737,7 @@ sub set_constants {                          # {{{1
     'ClojureC'                     =>   1.25,
     'CMake'                        =>   1.00,
     'COBOL'                        =>   1.04,
-    'COBOL ii'                     =>   0.75,
-    'COBOL/400'                    =>   0.88,
+    'CoCoA 5'                      =>   1.04,
     'CoffeeScript'                 =>   2.00,
     'Constraint Grammar'           =>   4.00,
     'Containerfile'                =>   2.00,
@@ -10977,6 +10996,7 @@ sub set_constants {                          # {{{1
     'TTCN'                         =>   2.00,
     'TITAN Project File Information' =>   1.90,
     'TypeScript'                   =>   2.00,
+    'Typst'                        =>   3.00,
     'Umka'                         =>   2.00,
     'Unity-Prefab'                 =>   2.50,
     'Vala'                         =>   1.50,
