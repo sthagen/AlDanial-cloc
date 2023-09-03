@@ -1087,6 +1087,21 @@ my @Tests = (
                     'args' => '../tests/inputs/DocTest.thrift',
                 },
                 {
+                    'name' => 'TLA+',
+                    'ref'  => '../tests/outputs/TLAExample.tla.yaml',
+                    'args' => '../tests/inputs/TLAExample.tla',
+                },
+                {
+                    'name' => 'TLA+/PlusCal',
+                    'ref'  => '../tests/outputs/PlusCalExample.tla.yaml',
+                    'args' => '../tests/inputs/PlusCalExample.tla',
+                },
+                {
+                    'name' => 'TLA+/PlusCal --no-autogen',
+                    'ref'  => '../tests/outputs/PlusCalExample-no-autogen.tla.yaml',
+                    'args' => '--no-autogen ../tests/inputs/PlusCalExample.tla',
+                },
+                {
                     'name' => 'TOML',
                     'ref'  => '../tests/outputs/toml_example.toml.yaml',
                     'args' => '../tests/inputs/toml_example.toml',
@@ -1165,6 +1180,11 @@ my @Tests = (
                     'name' => 'Vuejs Component',
                     'ref'  => '../tests/outputs/ItemView.vue.yaml',
                     'args' => '../tests/inputs/ItemView.vue',
+                },
+                {
+                    'name' => 'Vyper',
+                    'ref'  => '../tests/outputs/vyper.vy.yaml',
+                    'args' => '../tests/inputs/vyper.vy',
                 },
                 {
                     'name' => 'WebAssembly',
@@ -1266,7 +1286,7 @@ foreach my $t (@Tests) {
     ok(-e $results, $t->{'name'} . " created output");
     my %ref  = load_yaml($t->{'ref'});
     my %this = load_yaml($results);
-    is_deeply(\%ref, \%this, $t->{'name'} . " results match");
+    is_deeply(\%this, \%ref, $t->{'name'} . " results match");
 }
 done_testing();
 

@@ -29,7 +29,7 @@
 # <http://www.gnu.org/licenses/gpl.txt>.
 #
 # 1}}}
-my $VERSION = "1.97";  # odd number == beta; even number == stable
+my $VERSION = "1.99";  # odd number == beta; even number == stable
 my $URL     = "github.com/AlDanial/cloc";  # 'https://' pushes header too wide
 require 5.10.0;
 # use modules                                  {{{1
@@ -363,9 +363,10 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
    --no-recurse              Count files in the given directories without
                              recursively descending below them.
    --original-dir            [Only effective in combination with
-                             --strip-comments]  Write the stripped files
-                             to the same directory as the original files.
-   --only-count-files        Only count files by language.
+                             --strip-comments or --strip-code]  Write the stripped
+                             files to the same directory as the original files.
+   --only-count-files        Only count files by language.  Blank, comment, and
+                             code counts will be zero.
    --read-binary-files       Process binary files in addition to text files.
                              This is usually a bad idea and should only be
                              attempted with text files that have embedded
@@ -414,6 +415,13 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
    --stdin-name=<file>       Give a file name to use to determine the language
                              for standard input.  (Use - as the input name to
                              receive source code via STDIN.)
+   --strip-code=<ext>        For each file processed, write to the current
+                             directory a version of the file which has blank
+                             and code lines, including code with (in-line
+                             comments) removed. The name of each stripped file
+                             is the original file name with .<ext> appended to
+                             it. It is written to the current directory unless
+                             --original-dir is on.
    --strip-comments=<ext>    For each file processed, write to the current
                              directory a version of the file which has blank
                              and commented lines removed (in-line comments
@@ -459,7 +467,8 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
                              a performance improvement when counting projects
                              with large files.  However, these cloc-specific
                              features will not be available: --diff,
-                             --count-and-diff, --strip-comments, --unicode.
+                             --count-and-diff, --strip-code, --strip-comments,
+                             --unicode.
    --windows                 Override the operating system autodetection
                              logic and run in Microsoft Windows mode.
                              See also --unix, --show-os.
@@ -696,6 +705,7 @@ my (
     $opt_read_lang_def        ,
     $opt_write_lang_def       ,
     $opt_write_lang_def_incl_dup,
+    $opt_strip_code           ,
     $opt_strip_comments       ,
     $opt_original_dir         ,
     $opt_quiet                ,
@@ -799,6 +809,7 @@ my $getopt_success = GetOptions(             # {{{1
    "script_lang|script-lang=s"               => \@opt_script_lang         ,
    "sdir=s"                                  => \$opt_sdir                ,
    "skip_uniqueness|skip-uniqueness"         => \$opt_skip_uniqueness     ,
+   "strip_code|strip-code=s"                 => \$opt_strip_code          ,
    "strip_comments|strip-comments=s"         => \$opt_strip_comments      ,
    "original_dir|original-dir"               => \$opt_original_dir        ,
    "sum_reports|sum-reports"                 => \$opt_sum_reports         ,
@@ -901,6 +912,7 @@ load_from_config_file($config_file,          # {{{2
                                                 \@opt_script_lang         ,
                                                 \$opt_sdir                ,
                                                 \$opt_skip_uniqueness     ,
+                                                \$opt_strip_code          ,
                                                 \$opt_strip_comments      ,
                                                 \$opt_original_dir        ,
                                                 \$opt_sum_reports         ,
@@ -1055,12 +1067,16 @@ if ($opt_use_sloccount) {
         warn "--count-and-diff is disabled with --use-sloccount\n" if $opt_count_diff;
         warn "--unicode is disabled with --use-sloccount\n" if $opt_unicode;
         warn "--strip-comments is disabled with --use-sloccount\n" if $opt_strip_comments;
+        warn "--strip-code is disabled with --use-sloccount\n" if $opt_strip_code;
         $opt_diff           = 0;
         $opt_count_diff     = undef;
         $opt_unicode        = 0;
         $opt_strip_comments = 0;
+        $opt_strip_code     = 0;
     }
 }
+die "--strip-comments and --strip-code are mutually exclusive\n" if
+    $opt_strip_comments and $opt_strip_code;
 $opt_vcs = 0 if $opt_force_git;
 
 # replace Windows path separators with /
@@ -3921,6 +3937,7 @@ sub generate_sql    {                        # {{{1
         $schema = "
 CREATE TABLE metadata
 (
+  id          INTEGER PRIMARY KEY,
   timestamp   TIMESTAMP,
   project     VARCHAR2(500 CHAR),
   elapsed_s   NUMBER(10, 6)
@@ -3929,6 +3946,7 @@ CREATE TABLE metadata
 
 CREATE TABLE t
 (
+  id             INTEGER           ,
   project        VARCHAR2(500 CHAR),
   language       VARCHAR2(500 CHAR),
   file_fullname  VARCHAR2(500 CHAR),
@@ -3937,7 +3955,9 @@ CREATE TABLE t
   nblank         INTEGER,
   ncomment       INTEGER,
   ncode          INTEGER,
-  nscaled        NUMBER(10, 6)
+  nscaled        NUMBER(10, 6),
+FOREIGN KEY (id)
+    REFERENCES metadata (id)
 )
 /
 
@@ -3945,10 +3965,12 @@ CREATE TABLE t
     } else {
         $schema = "
 create table metadata (          -- $URL v $VERSION
+                id        integer primary key,
                 timestamp varchar(500),
                 Project   varchar(500),
                 elapsed_s real);
 create table t        (
+                id            integer        ,
                 Project       varchar(500)   ,
                 Language      varchar(500)   ,
                 File          varchar(500)   ,
@@ -3957,7 +3979,9 @@ create table t        (
                 nBlank        integer        ,
                 nComment      integer        ,
                 nCode         integer        ,
-                nScaled       real           );
+                nScaled       real           ,
+        foreign key (id)
+            references metadata (id));
 ";
     }
     $opt_sql = "-" if $opt_sql eq "1";
@@ -3979,18 +4003,20 @@ create table t        (
     }
     print $fh $schema unless defined $opt_sql_append;
 
+    my $id = int(time());
     my $insert_into_t = "insert into t ";
     if ($opt_sql_style eq "oracle") {
-        printf $fh "insert into metadata values(TO_TIMESTAMP('%s','yyyy-mm-dd hh24:mi:ss'), '%s', %f);\n",
+        printf $fh "insert into metadata values(%d, TO_TIMESTAMP('%s','yyyy-mm-dd hh24:mi:ss'), '%s', %f);\n",
+                    $id,
                     strftime("%Y-%m-%d %H:%M:%S", localtime(time())),
                     $opt_sql_project, $elapsed_sec;
     } elsif ($opt_sql_style eq "named_columns") {
         print $fh "begin transaction;\n";
-        $insert_into_t .= "( Project, Language, File, File_dirname, File_basename, nBlank, nComment, nCode, nScaled )";
+        $insert_into_t .= "(id, Project, Language, File, File_dirname, File_basename, nBlank, nComment, nCode, nScaled )";
     } else {
         print $fh "begin transaction;\n";
-        printf $fh "insert into metadata values('%s', '%s', %f);\n",
-                    strftime("%Y-%m-%d %H:%M:%S", localtime(time())),
+        printf $fh "insert into metadata values(%d, '%s', '%s', %f);\n",
+                    $id, strftime("%Y-%m-%d %H:%M:%S", localtime(time())),
                     $opt_sql_project, $elapsed_sec;
     }
 
@@ -4007,8 +4033,9 @@ create table t        (
         $clean_filename =~ s/\'/''/g;  # double embedded single quotes
                                        # to escape them
 
-        printf $fh "$insert_into_t values('%s', '%s', '%s', '%s', '%s', " .
+        printf $fh "$insert_into_t values(%d, '%s', '%s', '%s', '%s', '%s', " .
                    "%d, %d, %d, %f);\n",
+                    $id                        ,
                     $opt_sql_project           ,
                     $language                  ,
                     $clean_filename            ,
@@ -5185,9 +5212,43 @@ sub replace_git_hash_with_tarfile {          # {{{1
 
             }
 
-#use Data::Dumper;
-#print "files_union =\n", Dumper(\%files_union);
-#print "repo_listing=\n", Dumper(\%repo_listing);
+            if ($opt_exclude_list_file) {
+                my @reject_list = read_list_file($opt_exclude_list_file);
+                my %entries_to_drop = ();
+                foreach my $f_or_d (@reject_list) {
+                    if (-d $f_or_d) {
+                        # directory match
+                        $entries_to_drop{$f_or_d} = 1;
+                        foreach my $file (keys %files_union) {
+                            $entries_to_drop{$file} = 1 if $file =~ m{$f_or_d/};
+                        }
+                    } else {
+                        # exact match
+                        $entries_to_drop{$f_or_d} = 1;
+                    }
+                }
+                foreach my $file (keys %entries_to_drop) {
+                    delete $files_union{$file};
+                }
+            }
+
+            if ($opt_list_file) {
+                my @include_list = read_list_file($opt_list_file);
+                my %entries_to_add  = ();
+                foreach my $f_or_d (@include_list) {
+                    if (-d $f_or_d) {
+                        # directory match
+                        $entries_to_add{$f_or_d} = 1;
+                        foreach my $file (keys %files_union) {
+                            $entries_to_add{$file} = 1 if $file =~ m{$f_or_d/};
+                        }
+                    } else {
+                        # exact match
+                        $entries_to_add{$f_or_d} = 1;
+                    }
+                }
+                %files_union = %entries_to_add; # and exclude all others
+            }
 
             # then make truncated tar files of those union files which
             # actually exist in each repo
@@ -6510,6 +6571,15 @@ sub call_counter {                           # {{{1
         }
         write_file($stripped_file, {}, @lines);
     }
+    if ($opt_strip_code) {
+        my $stripped_file = "";
+        if ($opt_original_dir) {
+            $stripped_file =          $file . ".$opt_strip_code";
+        } else {
+            $stripped_file = basename $file . ".$opt_strip_code";
+        }
+        write_file($stripped_file, {}, rm_code(\@original_lines, \@lines));
+    }
     if ($opt_html and !$opt_diff) {
         chomp(@original_lines);  # includes blank lines, comments
         chomp(@lines);           # no blank lines, no comments
@@ -6923,6 +6993,30 @@ sub rm_comments {                            # {{{1
 
     print "<- rm_comments\n" if $opt_v > 2;
     return @lines;
+} # 1}}}
+sub rm_code {                                # {{{1
+    # Return lines containing only comments.
+    my ($ra_lines_w_comments , # in
+        $ra_lines_no_comments, # in
+       )  = @_;
+
+    my @w_comments_no_blanks  = grep { ! /^\s*$/ } @{$ra_lines_w_comments} ;
+    my @no_comments_no_blanks = grep { ! /^\s*$/ } @{$ra_lines_no_comments};
+    chomp( @w_comments_no_blanks  );
+    chomp( @no_comments_no_blanks );
+
+    my @sdiffs = sdiff( \@w_comments_no_blanks, \@no_comments_no_blanks, );
+    my @comments = ();
+    foreach my $entry (@sdiffs) {
+        my ($out_1, $out_2) = ('', '');
+        next if $entry->[0] eq 'u';
+        if ($entry->[0] eq '-') {
+            $out_1 = $entry->[1];
+        }
+        next if $out_1 =~ /^\s*$/;
+        push @comments, $out_1;
+    }
+    return @comments;
 } # 1}}}
 sub remove_first_n {                         # {{{1
     my ($n, $ra_lines, ) = @_;
@@ -7632,6 +7726,64 @@ sub remove_OCaml_comments {                  # {{{1
     print "<- remove_OCaml_comments\n" if $opt_v > 2;
     return @save_lines;
 } # 1}}}
+sub remove_TLAPlus_generated_code {          # {{{1
+    my ($ra_lines, ) = @_;
+    # If --no-autogen, remove code created by the PlusCal translator.
+    return @{$ra_lines} if !$opt_no_autogen;
+    return remove_between_regex($ra_lines, '^\\\\\\* BEGIN TRANSLATION\b', '^\\\\\\* END TRANSLATION\b');
+} # 1}}}
+sub remove_TLAPlus_comments {                # {{{1
+    my ($ra_lines, ) = @_;
+    # TLA+ block comments are like OCaml comments (remove_OCaml_comments).
+    # However, TLA+ comments may contain PlusCal code, and we must consider the
+    # PlusCal code as code, not comments.
+
+    print "-> remove_TLAPlus_comments\n" if $opt_v > 2;
+
+    my @save_lines = ();
+    my $in_comment = 0;        # counter to depth of nested (* *) comments
+    my $in_pluscal_head = 0;   # whether we saw the start of PlusCal code
+    my $in_pluscal_block = 0;  # counter to depth of nested { } blocks
+    my $saved_in_comment = 0;  # $in_comment before we entered PlusCal code
+    foreach my $L (@{$ra_lines}) {
+        next if $L =~ /^\s*$/;
+        # make an array of interesting tokens we need to act upon
+        my $clean_line = ""; # ie, free of comments
+        my @tokens = split(/(\(\*|\*\)|".*?"|[{}]|--fair\b|--algorithm|PlusCal options)/, $L);
+        foreach my $t (@tokens) {
+            next unless $t;
+            if      ($t eq "(*") {
+                ++$in_comment;
+            } elsif ($t eq "*)") {
+                --$in_comment;
+            } elsif ($t eq "{" && $in_pluscal_head) {
+                # start block matching when we see '{' in '--algorithm NAME {'
+                $in_pluscal_head = 0;
+                $in_pluscal_block = 1;
+                $saved_in_comment = $in_comment;
+                $in_comment = 0;
+                $clean_line .= $t;
+            } elsif ($t eq "{" && $in_pluscal_block && !$in_comment) {
+                ++$in_pluscal_block;
+                $clean_line .= $t;
+            } elsif ($t eq "}" && $in_pluscal_block && !$in_comment) {
+                --$in_pluscal_block;
+                if ($in_pluscal_block == 0) {
+                    $in_comment = $saved_in_comment;
+                }
+                $clean_line .= $t;
+            } elsif ($t eq "--fair" || $t eq "--algorithm") {
+                $in_pluscal_head = 1;
+                $clean_line .= $t;
+            } elsif (!$in_comment || $in_pluscal_head || $in_pluscal_block || $t eq "PlusCal options") {
+                $clean_line .= $t;
+            }
+        }
+        push @save_lines, $clean_line if $clean_line;
+    }
+    print "<- remove_TLAPlus_comments\n" if $opt_v > 2;
+    return @save_lines;
+} # 1}}}
 sub remove_slim_block {                      # {{{1
     # slim comments start with /
     # followed by indented text on subsequent lines.
@@ -8221,6 +8373,7 @@ sub set_constants {                          # {{{1
             'lektorproject'=> 'INI'                  ,
             'buildozer.spec'=> 'INI'                 ,
             'ini'         => 'INI'                   ,
+            'editorconfig'=> 'INI'                   ,
             'ism'         => 'InstallShield'         ,
             'ipl'         => 'IPL'                   ,
             'pro'         => 'IDL/Qt Project/Prolog/ProGuard' ,
@@ -8638,6 +8791,7 @@ sub set_constants {                          # {{{1
             'tres'        => 'Godot Resource'        ,
             'tscn'        => 'Godot Scene'           ,
             'thrift'      => 'Thrift'                ,
+            'tla'         => 'TLA+'                  ,
             'tpl'         => 'Smarty'                ,
             'trigger'     => 'Apex Trigger'          ,
             'ttcn'        => 'TTCN'                  ,
@@ -8698,6 +8852,7 @@ sub set_constants {                          # {{{1
             'VB'          => 'Visual Basic .NET'     ,
             'vbw'         => 'Visual Basic'          , # .vbw - autogenerated
             'vue'         => 'Vuejs Component'       ,
+            'vy'          => 'Vyper'                 ,
             'webinfo'     => 'ASP.NET'               ,
             'wsdl'        => 'Web Services Description',
             'x'           => 'Logos'                 ,
@@ -9983,7 +10138,8 @@ sub set_constants {                          # {{{1
     'Rexx'               => [   [ 'call_regexp_common'  , 'C'      ], ],
     'ReasonML'           => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
-                                [ 'remove_between_general', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
                             ],
     'ReScript'           => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
@@ -10203,6 +10359,11 @@ sub set_constants {                          # {{{1
     'Text'               => [
                                 [ 'remove_matches'      , '^\s*$'  ],
                             ],
+    'TLA+'               => [
+                                [ 'remove_TLAPlus_generated_code'                 ],
+                                [ 'remove_matches'               , '^\\s*\\\\\\*' ],
+                                [ 'remove_TLAPlus_comments'                       ],
+                            ],
     'Thrift'             => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
@@ -10333,6 +10494,12 @@ sub set_constants {                          # {{{1
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
                                 [ 'call_regexp_common'  , 'C++'    ],
+                            ],
+    'Vyper'              => [
+                                [ 'remove_matches'      , '^\s*#'  ],
+                                [ 'docstring_to_C'                 ],
+                                [ 'call_regexp_common'  , 'C'      ],
+                                [ 'remove_inline'       , '#.*$'   ],
                             ],
     'Teamcenter def'     => [   [ 'remove_matches'      , '^\s*#'  ], ],
     'Windows Module Definition' => [
@@ -10549,6 +10716,7 @@ sub set_constants {                          # {{{1
     'lex'                =>     '\\\\$'         ,
     'Vala'               =>     '\\\\$'         ,
     'Vala Header'        =>     '\\\\$'         ,
+    'Vyper'              =>     '\\\\$'         ,
     'X++'                =>     '\\\\$'         ,
     'zsh'                =>     '\\\\$'         ,
     );
@@ -10974,6 +11142,7 @@ sub set_constants {                          # {{{1
     'TeX'                          =>   1.50,
     'Text'                         =>   0.50,
     'Thrift'                       =>   2.50,
+    'TLA+'                         =>   1.00,
     'Titanium Style Sheet'         =>   2.00,
     'TOML'                         =>   2.76,
     'Twig'                         =>   2.00,
@@ -10997,6 +11166,7 @@ sub set_constants {                          # {{{1
     'Visualforce Component'        =>   1.9 ,
     'Visualforce Page'             =>   1.9 ,
     'Vuejs Component'              =>   2.00,
+    'Vyper'                        =>   4.20,
     'Web Services Description'     =>   1.00,
     'WebAssembly'                  =>   0.45,
     'WGSL'                         =>   2.50,
@@ -13632,6 +13802,7 @@ sub load_from_config_file {                  # {{{1
                                                  $ra_script_lang         ,
                                                  $rs_sdir                ,
                                                  $rs_skip_uniqueness     ,
+                                                 $rs_strip_code          ,
                                                  $rs_strip_comments      ,
                                                  $rs_original_dir        ,
                                                  $rs_sum_reports         ,
@@ -13740,6 +13911,7 @@ sub load_from_config_file {                  # {{{1
         } elsif (!defined ${$rs_report_file}         and /^out(=|\s+)(.*?)$/)                                 { ${$rs_report_file}        = $2;
         } elsif (!defined ${$rs_sdir}                and /^sdir(=|\s+)(.*?)$/)                                { ${$rs_sdir}               = $2;
         } elsif (!defined ${$rs_skip_uniqueness}     and /^(skip_uniqueness|skip-uniqueness)/)                { ${$rs_skip_uniqueness}    = 1;
+        } elsif (!defined ${$rs_strip_code}          and /^(?:strip_code|strip-code)(=|\s+)(.*?)$/)           { ${$rs_strip_code}         = $2;
         } elsif (!defined ${$rs_strip_comments}      and /^(?:strip_comments|strip-comments)(=|\s+)(.*?)$/)   { ${$rs_strip_comments}     = $2;
         } elsif (!defined ${$rs_original_dir}        and /^(original_dir|original-dir)/)                      { ${$rs_original_dir}       = 1;
         } elsif (!defined ${$rs_sum_reports}         and /^(sum_reports|sum-reports)/)                        { ${$rs_sum_reports}        = 1;
