@@ -30,6 +30,11 @@ my @Tests = (
                     'args' => '../tests/inputs/rand.apl',
                 },
                 {
+                    'name' => 'AppleScript',
+                    'ref'  => '../tests/outputs/send_msg.applescript.yaml',
+                    'args' => '../tests/inputs/send_msg.applescript',
+                },
+                {
                     'name' => 'AsciiDoc',
                     'ref'  => '../tests/outputs/asciidoctor.adoc.yaml',
                     'args' => '../tests/inputs/asciidoctor.adoc',
@@ -223,6 +228,11 @@ my @Tests = (
                     'name' => 'Cucumber',
                     'ref'  => '../tests/outputs/cucumber.feature.yaml',
                     'args' => '../tests/inputs/cucumber.feature',
+                },
+                {
+                    'name' => 'Dafny',
+                    'ref'  => '../tests/outputs/fib.dfy.yaml',
+                    'args' => '../tests/inputs/fib.dfy',
                 },
                 {
                     'name' => 'DenizenScript',
