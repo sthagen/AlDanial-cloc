@@ -10,6 +10,11 @@ my @Tests = (
                     'args' => '../tests/inputs/Lookup.agda',
                 },
                 {
+                    'name' => 'AnsProlog',
+                    'ref'  => '../tests/outputs/AnsProlog.lp.yaml',
+                    'args' => '../tests/inputs/AnsProlog.lp',
+                },
+                {
                     'name' => 'ANTLR Grammar 1',
                     'ref'  => '../tests/outputs/ExprParser.g.yaml',
                     'args' => '../tests/inputs/ExprParser.g',
@@ -33,6 +38,11 @@ my @Tests = (
                     'name' => 'AppleScript',
                     'ref'  => '../tests/outputs/send_msg.applescript.yaml',
                     'args' => '../tests/inputs/send_msg.applescript',
+                },
+                {
+                    'name' => 'ArkTs',
+                    'ref'  => '../tests/outputs/openharmony.ets.yaml',
+                    'args' => '../tests/inputs/openharmony.ets',
                 },
                 {
                     'name' => 'AsciiDoc',
