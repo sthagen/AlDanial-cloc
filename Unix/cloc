@@ -8806,6 +8806,7 @@ sub set_constants {                          # {{{1
             'udf.sql'     => 'SQL Stored Procedure'  ,
             'data.sql'    => 'SQL Data'              ,
             'sss'         => 'SugarSS'               ,
+            'slint'       => 'Slint'                 ,
             'st'          => 'Smalltalk'             ,
             'rules'       => 'Snakemake'             ,
             'smk'         => 'Snakemake'             ,
@@ -10299,6 +10300,11 @@ sub set_constants {                          # {{{1
     'Slim'               => [
                                 [ 'remove_slim_block'   ,          ],
                             ],
+    'Slint'              => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                            ],
     'SKILL'              => [
                                 [ 'call_regexp_common'  , 'C'      ],
                                 [ 'remove_matches'      , '^\s*;'  ],
@@ -10800,6 +10806,7 @@ sub set_constants {                          # {{{1
     'kvlang'             =>     '\\\\$'         ,
     'Kermit'             =>     '\\\\$'         ,
     'Korn Shell'         =>     '\\\\$'         ,
+    'Slint'              =>     '\\\\$'         ,
     'Snakemake'          =>     '\\\\$'         ,
     'Starlark'           =>     '\\\\$'         ,
     'Solidity'           =>     '\\\\$'         ,
@@ -11205,8 +11212,8 @@ sub set_constants {                          # {{{1
     'SCSS'                         =>   1.5 ,
     'SKILL'                        =>   2.00,
     'SKILL++'                      =>   2.00,
-    'slogan'                       =>   0.98,
     'Slice'                        =>   1.50,
+    'Slint'                        =>   1.00,
     'Smalltalk'                    =>   4.00,
     'Smarty'                       =>   3.50,
     'Softbridge Basic'             =>   2.76,
