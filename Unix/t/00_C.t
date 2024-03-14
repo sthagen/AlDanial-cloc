@@ -727,6 +727,11 @@ my @Tests = (
                     'args' => '../tests/inputs/RenderTest.metal',
                 },
                 {
+                    'name' => 'Modelica',
+                    'ref'  => '../tests/outputs/SimpleODE.mo.yaml',
+                    'args' => '../tests/inputs/SimpleODE.mo',
+                },
+                {
                     'name' => 'Mojo',
                     'ref'  => '../tests/outputs/Mojo.mojom.yaml',
                     'args' => '../tests/inputs/Mojo.mojom',
@@ -890,6 +895,11 @@ my @Tests = (
                     'name' => 'Prisma Schema',
                     'ref'  => '../tests/outputs/schema.prisma.yaml',
                     'args' => '../tests/inputs/schema.prisma',
+                },
+                {
+                    'name' => 'Processing',
+                    'ref'  => '../tests/outputs/pointillism.pde.yaml',
+                    'args' => '../tests/inputs/pointillism.pde',
                 },
                 {
                     'name' => 'ProGuard',
