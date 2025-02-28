@@ -822,6 +822,7 @@ my %Extension_Collision = (
     'Visual Basic/TeX/Apex Class'                   => [ 'cls'  ] ,
     'Scheme/SaltStack'                              => [ 'sls'  ] ,
     'SKILL/.NET IL'                                 => [ 'il'   ] ,
+    'Clojure/Cangjie'                               => [ 'cj'   ] ,
 );
 my @Autogen_to_ignore = no_autogen_files($list_no_autogen);
 if ($opt_force_lang_def) {
@@ -4767,6 +4768,7 @@ sub generate_report {                        # {{{1
                                         }
                                    keys %{$rhh_count}) {
         next if $lang_or_file eq "by report file";
+        my $clean_lang_or_file = $lang_or_file;   # later, if by-file protect ' and "
         my ($factor, $scaled);
         if ($BY_LANGUAGE or $BY_FILE) {
             $factor = 1;
@@ -4801,9 +4803,20 @@ sub generate_report {                        # {{{1
         }
 
         if ($BY_FILE) {
-            my $clean_filename = rm_leading_tempdir($lang_or_file, \%TEMP_DIR);
-               $clean_filename = xml_metachars($clean_filename) if $out_style eq "xml";
-            $data_line  = sprintf $Format{'1'}{$Style}, $clean_filename;
+            $clean_lang_or_file = rm_leading_tempdir($lang_or_file, \%TEMP_DIR);
+            $clean_lang_or_file = xml_metachars($clean_lang_or_file) if $out_style eq "xml";
+            if ($out_style eq "yaml")  {
+                # YAML does not allow protected single quotes in keys
+                $clean_lang_or_file =~ s/'/0x27/g;
+            } elsif ($out_style eq "json")  {
+                # JSON does not allow protected double quotes in keys
+                $clean_lang_or_file =~ s/"/0x2b/g;
+            } elsif ($out_style ne "txt")  {
+                # text output is allowed to keep its quotes as they are
+                $clean_lang_or_file =~ s/'/\\'/g;
+                $clean_lang_or_file =~ s/"/\\"/g;
+            }
+            $data_line  = sprintf $Format{'1'}{$Style}, $clean_lang_or_file;
         } else {
             $data_line  = sprintf $Format{'2'}{$Style}, $lang_or_file;
         }
@@ -4847,9 +4860,9 @@ sub generate_report {                        # {{{1
             if ($out_style eq "yaml") {
                 # YAML: force quoted language or filename in case these
                 #       have embedded funny characters, issue #312
-                push @results,"'" . rm_leading_tempdir($lang_or_file, \%TEMP_DIR). "' :$open_B";
+                push @results,"'" . rm_leading_tempdir($clean_lang_or_file, \%TEMP_DIR). "' :$open_B";
             } else {
-                push @results,"${Q}" . rm_leading_tempdir($lang_or_file, \%TEMP_DIR). "${Q} :$open_B";
+                push @results,"${Q}" . rm_leading_tempdir($clean_lang_or_file, \%TEMP_DIR). "${Q} :$open_B";
             }
             push @results,"  ${Q}nFiles${Q}: " . $rhh_count->{$lang_or_file}{'nFiles'} . $C
                 unless $BY_FILE;
@@ -5465,6 +5478,11 @@ sub print_language_info {                    # {{{1
         push @{$extensions{'Scheme'}}    , "sls";
         push @{$extensions{'SaltStack'}} , "sls";
         delete $extensions{'Scheme/SaltStack'};
+    }
+    if (!$language or $language =~ /^(Clojure|Cangjie)$/i) {
+        push @{$extensions{'Clojure'}} , "cj";
+        push @{$extensions{'Cangjie'}} , "cj";
+        delete $extensions{'Clojure/Cangjie'};
     }
     if ($opt_explain) {
         return unless $extensions{$language};
@@ -6837,6 +6855,8 @@ sub classify_file {                          # {{{1
                 return Pascal_or_Pawn($full_file, $rh_Err, $raa_errors);
             } elsif ($Language_by_Extension{$extension} eq 'SKILL/.NET IL') {
                 return SKILL_or_DotNetIL($full_file, $rh_Err, $raa_errors);
+            } elsif ($Language_by_Extension{$extension} eq 'Clojure/Cangjie') {
+                return Clojure_or_Cangjie($full_file, $rh_Err, $raa_errors);
             } elsif ($Language_by_Extension{$extension} eq 'Brainfuck') {
                 if (really_is_bf($full_file)) {
                     return $Language_by_Extension{$extension};
@@ -8789,6 +8809,7 @@ sub set_constants {                          # {{{1
             'cljs.hl'     => 'Clojure'               ,
             'cl2'         => 'Clojure'               ,
             'boot'        => 'Clojure'               ,
+            'cj'          => 'Clojure/Cangjie'       ,
             'clj'         => 'Clojure'               ,
             'cljs'        => 'ClojureScript'         ,
             'cljc'        => 'ClojureC'              ,
@@ -9917,6 +9938,11 @@ sub set_constants {                          # {{{1
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
                                 [ 'call_regexp_common'  , 'C++'    ],
                             ],
+    'Cangjie'            => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                            ],
     'Carbon'             => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
@@ -9938,6 +9964,7 @@ sub set_constants {                          # {{{1
                             ],
     'ClojureScript'      => [   [ 'remove_matches'      , '^\s*;'  ], ],
     'ClojureC'           => [   [ 'remove_matches'      , '^\s*;'  ], ],
+    'Clojure/Cangjie'    => [ [ 'die' ,  ], ], # never called
     'CMake'              => [
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
@@ -11718,6 +11745,7 @@ sub set_constants {                          # {{{1
     'Cake Build Script'            =>   1.36,
     'C++'                          =>   1.51,
     'Cadence'                      =>   3.00,
+    'Cangjie'                      =>   3.00,
     'Carbon'                       =>   1.51,
     'CCS'                          =>   5.33,
     'Civet'                        =>   3.00,
@@ -12093,6 +12121,7 @@ sub set_constants {                          # {{{1
     'MATLAB/Mathematica/Objective-C/MUMPS/Mercury' => 1.00,
     'IDL/Qt Project/Prolog/ProGuard'     => 1.00,
     'SKILL/.NET IL'                => 1.00,
+    'Clojure/Cangjie'              => 1.00,
 );
 # 1}}}
 %{$rh_Known_Binary_Archives} = (             # {{{1
@@ -13134,6 +13163,43 @@ sub SKILL_or_DotNetIL {                      # {{{1
         return "SKILL";
     } else {
         return ".NET IL";
+    }
+} # 1}}}
+sub Clojure_or_Cangjie {                     # {{{1
+    my ($file        , # in
+        $rh_Err      , # in   hash of error codes
+        $raa_errors  , # out
+       ) = @_;
+
+    print "-> Clojure_or_Cangjie($file)\n" if $opt_v > 2;
+
+    my $lang = undef;
+    my $IN = open_file('<', $file, 1);
+    if (!defined $IN) {
+        push @{$raa_errors}, [$rh_Err->{'Unable to read'} , $file];
+        return $lang;
+    }
+    my $clojure   = 0;
+    my $cangjie = 0;
+    while (<$IN>) {
+        next if /^\s*$/;
+        if (/^\s*(;|\(|\[)/) {
+            $clojure += 50;
+        } elsif (/^(import|func|main)/) {
+            $cangjie += 50;
+        } elsif (/{\s*$/ or /^\s*}$/) {
+            $cangjie += 5;
+        } elsif (/^\s*(procedure|let|foreach)\b/) {
+            $clojure += 1;
+        }
+    }
+    $IN->close;
+
+    print "<- Clojure_or_Cangjie($file: clojure=$clojure, .NET IL=$cangjie\n" if $opt_v > 2;
+    if ($clojure > $cangjie) {
+        return "Clojure";
+    } else {
+        return "Cangjie";
     }
 } # 1}}}
 sub html_colored_text {                      # {{{1
