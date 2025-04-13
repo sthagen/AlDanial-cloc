@@ -393,6 +393,7 @@ my $getopt_success = GetOptions(             # {{{1
    "encoding=s"                              => \$opt_encoding            , # not production ready #880
   );
 $opt_txt = 0;
+my $opt_fmt_tempfile = "";
 # 1}}}
 $config_file = $opt_config_file if defined $opt_config_file;
 load_from_config_file($config_file,          # {{{2
@@ -7312,6 +7313,13 @@ sub write_file {                             # {{{1
 
     my $OUT = undef;
     unlink_file($file);
+    # If $file is a reference to a scalar, write to that scalar.  This works
+    # cleanly on Unix, but on Windows a zero-length file is created.  The
+    # filename starts with "SCALAR" followed by a memory address in hex.
+    # This temporary file will need to be cleaned up before the program ends.
+    if ($ON_WINDOWS and (ref($file) eq "SCALAR" or $file =~ /^SCALAR/)) {
+        $opt_fmt_tempfile = "$file"; # string version of the file name
+    }
     if ($opt_file_encoding) {
         $OUT = open_file(">:encoding($opt_file_encoding)", $file, 0);
     } else {
@@ -9703,52 +9711,58 @@ sub set_constants {                          # {{{1
             );
 # 1}}}
 %{$rh_Language_by_Script}    = (             # {{{1
-            'awk'      => 'awk'                   ,
-            'bash'     => 'Bourne Again Shell'    ,
-            'bc'       => 'bc'                    ,# calculator
-            'crystal'  => 'Crystal'               ,
-            'csh'      => 'C Shell'               ,
-            'dmd'      => 'D'                     ,
-            'dtrace'   => 'dtrace'                ,
-            'escript'  => 'Erlang'                ,
-            'groovy'   => 'Groovy'                ,
-            'idl'      => 'IDL'                   ,
-            'kermit'   => 'Kermit'                ,
-            'ksh'      => 'Korn Shell'            ,
-            'lua'      => 'Lua'                   ,
-            'luau'     => 'Luau'                  ,
-            'make'     => 'make'                  ,
-            'octave'   => 'Octave'                ,
-            'perl5'    => 'Perl'                  ,
-            'perl'     => 'Perl'                  ,
-            'miniperl' => 'Perl'                  ,
-            'nextflow' => 'Nextflow'              ,
-            'php'      => 'PHP'                   ,
-            'php5'     => 'PHP'                   ,
-            'python'   => 'Python'                ,
-            'python2.6'=> 'Python'                ,
-            'python2.7'=> 'Python'                ,
-            'python3'  => 'Python'                ,
-            'python3.3'=> 'Python'                ,
-            'python3.4'=> 'Python'                ,
-            'python3.5'=> 'Python'                ,
-            'python3.6'=> 'Python'                ,
-            'python3.7'=> 'Python'                ,
-            'python3.8'=> 'Python'                ,
-            'perl6'    => 'Raku'                  ,
-            'raku'     => 'Raku'                  ,
-            'rakudo'   => 'Raku'                  ,
-            'rexx'     => 'Rexx'                  ,
-            'regina'   => 'Rexx'                  ,
-            'ruby'     => 'Ruby'                  ,
-            'sed'      => 'sed'                   ,
-            'sh'       => 'Bourne Shell'          ,
-            'swipl'    => 'Prolog'                ,
-            'tcl'      => 'Tcl/Tk'                ,
-            'tclsh'    => 'Tcl/Tk'                ,
-            'tcsh'     => 'C Shell'               ,
-            'wish'     => 'Tcl/Tk'                ,
-            'zsh'      => 'zsh'                   ,
+            'awk'       => 'awk'                   ,
+            'bash'      => 'Bourne Again Shell'    ,
+            'bc'        => 'bc'                    ,# calculator
+            'crystal'   => 'Crystal'               ,
+            'csh'       => 'C Shell'               ,
+            'dmd'       => 'D'                     ,
+            'dtrace'    => 'dtrace'                ,
+            'escript'   => 'Erlang'                ,
+            'groovy'    => 'Groovy'                ,
+            'idl'       => 'IDL'                   ,
+            'kermit'    => 'Kermit'                ,
+            'ksh'       => 'Korn Shell'            ,
+            'lua'       => 'Lua'                   ,
+            'luau'      => 'Luau'                  ,
+            'make'      => 'make'                  ,
+            'octave'    => 'Octave'                ,
+            'perl5'     => 'Perl'                  ,
+            'perl'      => 'Perl'                  ,
+            'miniperl'  => 'Perl'                  ,
+            'nextflow'  => 'Nextflow'              ,
+            'php'       => 'PHP'                   ,
+            'php5'      => 'PHP'                   ,
+            'python'    => 'Python'                ,
+            'python2.6' => 'Python'                ,
+            'python2.7' => 'Python'                ,
+            'python3'   => 'Python'                ,
+            'python3.3' => 'Python'                ,
+            'python3.4' => 'Python'                ,
+            'python3.5' => 'Python'                ,
+            'python3.6' => 'Python'                ,
+            'python3.7' => 'Python'                ,
+            'python3.8' => 'Python'                ,
+            'python3.9' => 'Python'                ,
+            'python3.10'=> 'Python'                ,
+            'python3.11'=> 'Python'                ,
+            'python3.12'=> 'Python'                ,
+            'python3.13'=> 'Python'                ,
+            'python3.14'=> 'Python'                ,
+            'perl6'     => 'Raku'                  ,
+            'raku'      => 'Raku'                  ,
+            'rakudo'    => 'Raku'                  ,
+            'rexx'      => 'Rexx'                  ,
+            'regina'    => 'Rexx'                  ,
+            'ruby'      => 'Ruby'                  ,
+            'sed'       => 'sed'                   ,
+            'sh'        => 'Bourne Shell'          ,
+            'swipl'     => 'Prolog'                ,
+            'tcl'       => 'Tcl/Tk'                ,
+            'tclsh'     => 'Tcl/Tk'                ,
+            'tcsh'      => 'C Shell'               ,
+            'wish'      => 'Tcl/Tk'                ,
+            'zsh'       => 'zsh'                   ,
             );
 # 1}}}
 %{$rh_Language_by_File_Type}      = (        # {{{1
@@ -10933,9 +10947,9 @@ sub set_constants {                          # {{{1
     'Python'             => [
                                 [ 'remove_matches'      , '/\*'    ],
                                 [ 'remove_matches'      , '\*/'    ],
-                                [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'docstring_to_C'                 ],
                                 [ 'call_regexp_common'  , 'C'      ],
+                                [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
                             ],
     'Jupyter Notebook'   => [   # these are JSON files; have no comments
@@ -19080,6 +19094,13 @@ EOAlgDiff
     eval "use Algorithm::Diff qw / sdiff /";
     $HAVE_Algorithm_Diff = 1 unless $problems;
     print "<- Install_Algorithm_Diff\n" if $opt_v > 2;
+} # 1}}}
+END { # {{{1
+    # Remove temp file on Windows if running with --fmt
+    if ($ON_WINDOWS and $opt_fmt and $opt_fmt_tempfile) {
+        print "-> END unlink $opt_fmt_tempfile\n" if $opt_v > 2;
+        unlink($opt_fmt_tempfile)
+    }
 } # 1}}}
 __END__
 mode values (stat $item)[2]
