@@ -1833,7 +1833,7 @@ sub suggest_remedies_for_errors {            # {{{1
     if ($hit_timeout) {
         print "\n";
         print "One or more files took longer to process than expected.\n";
-        print "Try rerunning without timeout guards by adding  --timeout 0\n";
+        print "Try rerunning without timeout guards by adding  --timeout=0\n";
         print "to your command line arguments.  See the documentation on\n";
         print "the --timeout switch for more information.\n";
         print "\n";
@@ -9741,6 +9741,7 @@ sub set_constants {                          # {{{1
             'yaml'        => 'YAML'                  ,
             'yml'         => 'YAML'                  ,
             'yang'        => 'Yang'                  ,
+            'yarn'        => 'Yarn'                  ,
             'zig'         => 'Zig'                   ,
             'zsh'         => 'zsh'                   ,
             'rego'        => 'Rego'                  ,
@@ -10890,7 +10891,7 @@ sub set_constants {                          # {{{1
                             ],
     'Perl'               => [   [ 'remove_below'        , '^__(END|DATA)__'],
                                 [ 'remove_matches'      , '^\s*#'  ],
-                                [ 'remove_below_above'  , '^=head1', '^=cut'  ],
+                                [ 'remove_below_above' , '^=(?:pod|over|head\d+)', '^=cut' ],
                                 [ 'remove_inline'       , '#.*$'   ],
                             ],
     'PEG'                => [
@@ -11627,6 +11628,9 @@ sub set_constants {                          # {{{1
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
                                 [ 'call_regexp_common'  , 'C++'    ],
                             ],
+    'Yarn'               => [
+                                [ 'remove_matches'      , '^\s*//'  ],
+                            ],
     'Zig'                => [
                                 [ 'remove_matches'      , '^\s*//'  ],
                                 [ 'remove_inline'       , '//.*$'   ],
@@ -12204,6 +12208,7 @@ sub set_constants {                          # {{{1
     'yacc'                         =>   1.51,
     'yacc++'                       =>   1.51,
     'YAML'                         =>   0.90,
+    'Yarn'                         => 2.00,
     'Expect'                       => 2.00,
     'Gencat NLS'                   => 1.50,
     'C/C++ Header'                 => 1.00,

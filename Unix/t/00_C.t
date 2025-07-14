@@ -965,6 +965,11 @@ my @Tests = (
                     'args' => '../tests/inputs/pek_example.pek',
                 },
                 {
+                    'name' => 'Perl',
+                    'ref'  => '../tests/outputs/with_pod.pl.yaml',
+                    'args' => '../tests/inputs/with_pod.pl',
+                },
+                {
                     'name' => 'Pest',
                     'ref'  => '../tests/outputs/toml.pest.yaml',
                     'args' => '../tests/inputs/toml.pest',
@@ -1540,6 +1545,11 @@ my @Tests = (
                     'name' => 'Yang',
                     'ref'  => '../tests/outputs/bbf-device.yang.yaml',
                     'args' => '../tests/inputs/bbf-device.yang',
+                },
+                {
+                    'name' => 'Yarn',
+                    'ref'  => '../tests/outputs/guard_talking.yarn.yaml',
+                    'args' => '../tests/inputs/guard_talking.yarn',
                 },
                 {
                     'name' => 'Zig',
