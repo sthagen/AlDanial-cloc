@@ -103,6 +103,11 @@ my @Tests = (
                     'args' => '../tests/inputs/BUILD',
                 },
                 {
+                    'name' => 'Bicep',
+                    'ref'  => '../tests/outputs/sample.bicep.yaml',
+                    'args' => '../tests/inputs/sample.bicep',
+                },
+                {
                     'name' => 'BitBake',
                     'ref'  => '../tests/outputs/bitbake.yaml',
                     'args' => '../tests/inputs/hello_1.0.bb ' .
@@ -1482,6 +1487,12 @@ my @Tests = (
                     'name' => 'Vuejs Component 1',
                     'ref'  => '../tests/outputs/ItemView.vue.yaml',
                     'args' => '../tests/inputs/ItemView.vue',
+                },
+
+                {
+                    'name' => 'VSCode Workspace',
+                    'ref'  => '../tests/outputs/cloc-dev.code-workspace.yaml',
+                    'args' => '../tests/inputs/cloc-dev.code-workspace',
                 },
 
                 {

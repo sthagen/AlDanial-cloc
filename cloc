@@ -8845,13 +8845,15 @@ sub set_constants {                          # {{{1
             'BTM'         => 'DOS Batch'             ,
             'blade'       => 'Blade'                 ,
             'blade.php'   => 'Blade'                 ,
-            'build.xml'   => 'Ant'                   ,
             'b'           => 'Brainfuck'             ,
             'bf'          => 'Brainfuck'             ,
+            'bicep'       => 'Bicep'                 ,
+            'bicepparam'  => 'Bicep'                 ,
             'blp'         => 'Blueprint'             ,
             'brs'         => 'BrightScript'          ,
-            'bzl'         => 'Starlark'              ,
             'btp'         => 'BizTalk Pipeline'      ,
+            'build.xml'   => 'Ant'                   ,
+            'bzl'         => 'Starlark'              ,
             'odx'         => 'BizTalk Orchestration' ,
             'carbon'      => 'Carbon'                ,
             'cpy'         => 'COBOL'                 ,
@@ -8903,6 +8905,7 @@ sub set_constants {                          # {{{1
             'cob'         => 'COBOL'                 ,
             'COB'         => 'COBOL'                 ,
             'cocoa5'      => 'CoCoA 5'               ,
+            'code-workspace' => 'VSCode Workspace'   ,
             'c5'          => 'CoCoA 5'               ,
             'cpkg5'       => 'CoCoA 5'               ,
             'cocoa5server'=> 'CoCoA 5'               ,
@@ -9995,6 +9998,11 @@ sub set_constants {                          # {{{1
     'bc'                 => [
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
+                            ],
+    'Bicep'              => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
                             ],
     'BizTalk Pipeline' =>   [
                                 [ 'remove_html_comments',          ],
@@ -11515,6 +11523,11 @@ sub set_constants {                          # {{{1
                                 [ 'remove_html_comments',          ],
                                 [ 'call_regexp_common'  , 'HTML'   ],
                             ],
+    'VSCode Workspace'    => [
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                            ],
     'Vuejs Component'     => [
                                 [ 'remove_html_comments',          ],
 #                               [ 'call_regexp_common'  , 'HTML'   ], # problematic, ref #876
@@ -11896,6 +11909,7 @@ sub set_constants {                          # {{{1
     'basic'                        =>   0.75,
     'Bazel'                        =>   1.00,
     'bc'                           =>   1.50,
+    'Bicep'                        =>   3.00,
     'Blade'                        =>   2.00,
     'bliss'                        =>   0.75,
     'Blueprint'                    =>   2.50,
@@ -12224,6 +12238,7 @@ sub set_constants {                          # {{{1
     'Visual Fox Pro'               =>   4.00, # Visual Fox Pro is not available in the language gearing ratios listed at Mayes Consulting web site
     'Visualforce Component'        =>   1.9 ,
     'Visualforce Page'             =>   1.9 ,
+    'VSCode Workspace'             =>   2.50,
     'Vuejs Component'              =>   2.00,
     'Vyper'                        =>   4.20,
     'Web Services Description'     =>   1.00,
