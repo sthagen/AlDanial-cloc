@@ -1591,8 +1591,11 @@ printf "%8d file%s ignored.                           \n",
 print_errors(\%Error_Codes, \@Errors)
     if @Errors and !($opt_quiet and !$opt_show_errors);
 if (!%Delta_by_Language) {
-    print "Nothing to count.\n";
-    exit;
+    foreach my $out_style (sort keys %OUTFILE_EXT) {
+        next unless $OUTFILE_EXT{$out_style};
+        produce_null_output($opt_report_file, $out_style);
+        exit;
+    }
 }
 generate_diff_sql($end_time - $start_time, \%Delta_by_File) if $opt_sql;
 
@@ -1842,6 +1845,27 @@ sub produce_output {                         # {{{1
     }
 }
 # 1}}}
+sub produce_null_output {                    # {{{1
+    my ($outfile, $out_style) = @_;
+    print "-> produce_null_output($outfile, $out_style)\n" if $opt_v > 2;
+    my @Lines_Out = ( "Nothing to count." );
+    if ($out_style eq "json") {
+        @Lines_Out = ( "{}" );
+    } elsif ($out_style eq "xml") {
+        @Lines_Out = ( '<?xml version="1.0" encoding="UTF-8"?><results/>' );
+    } elsif ($out_style eq "csv") {
+        @Lines_Out = ( '' );
+    } elsif ($out_style eq "md" or $out_style eq "yaml") {
+        @Lines_Out = ( "# Nothing to count." );
+    }
+    if ($outfile) {
+        write_file($outfile, {}, @Lines_Out);
+    } else {
+        print "@Lines_Out\n";
+    }
+    print "<- produce_null_output()\n" if $opt_v > 2;
+}
+# 1}}}
 sub suggest_remedies_for_errors {            # {{{1
     my ($raa_errors) = @_; #  [ [ numeric error code, filename], .. ]
     my $hit_timeout = 0;
@@ -1994,11 +2018,14 @@ Usage: $script [options] <file(s)/dir(s)/git hash(es)> | <set 1> <set 2> | <repo
                              may be any mix of files, directories, archives,
                              or git commit hashes.  Use --diff-alignment to
                              generate a list showing which file pairs where
-                             compared.  When comparing git branches, only files
-                             which have changed in either commit are compared.
-                             See also --git, --count-and-diff, --diff-alignment,
-                             --diff-list-file, --diff-timeout, --ignore-case,
-                             --ignore-whitespace.
+                             compared.  File pairs are aligned by matching file
+                             names.  If --git is also given, a more sophisticated
+                             pairing algorithm which additionally attempts to pair
+                             renamed file is used.  When comparing git branches,
+                             only files which have changed in either commit are
+                             compared. See also --git, --count-and-diff,
+                             --diff-alignment, --diff-list-file, --diff-timeout,
+                             --ignore-case, --ignore-whitespace.
    --diff-timeout <N>        Ignore files which take more than <N> seconds
                              to process.  Default is 10 seconds.  Setting <N>
                              to 0 allows unlimited time.  (Large files with many
