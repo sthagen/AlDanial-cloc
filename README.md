@@ -5,9 +5,9 @@
 * * *
 cloc counts blank lines, comment lines, and physical lines of source code in many programming languages.
 
-Latest release:  v2.06 (June 24, 2025)
+Latest release:  v2.08 (Jan. 24, 2026)
 
-[![Version](https://img.shields.io/badge/version-2.06-blue.svg)](https://github.com/AlDanial/cloc)
+[![Version](https://img.shields.io/badge/version-2.08-blue.svg)](https://github.com/AlDanial/cloc)
 [![Contributors](https://img.shields.io/github/contributors/AlDanial/cloc.svg)](https://github.com/AlDanial/cloc/graphs/contributors)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.42029482.svg)](https://doi.org/10.5281/zenodo.42029482)
 [![Forks](https://img.shields.io/github/forks/AlDanial/cloc.svg)](https://github.com/AlDanial/cloc/network/members)
@@ -67,8 +67,8 @@ Step 3:  Invoke cloc to count your source files, directories, archives,
 or git commits.
 The executable name differs depending on whether you use the
 development source version (`cloc`), source for a
-released version (`cloc-2.06.pl`) or a Windows executable
-(`cloc-2.06.exe`).
+released version (`cloc-2.08.pl`) or a Windows executable
+(`cloc-2.08.exe`).
 
 On this page, `cloc` is the generic term
 used to refer to any of these.
@@ -307,8 +307,8 @@ on GitHub (link follows below) before submitting a problem report.
 <a name="Stable"></a> []({{{1)
 ## Stable release
 
-Download the latest released cloc source file, for example `cloc-2.06.pl`, or
-the Windows executable `cloc-2.06.exe` from
+Download the latest released cloc source file, for example `cloc-2.08.pl`, or
+the Windows executable `cloc-2.08.exe` from
 https://github.com/AlDanial/cloc/releases/latest
 
 <a name="Dev"></a>
@@ -451,18 +451,18 @@ C:> cpan -i Regexp::Common
 C:> cpan -i Algorithm::Diff
 C:> cpan -i PAR::Packer
 C:> cpan -i Win32::LongPath
-C:> pp -M Win32::LongPath -M Encode::Unicode -M Digest::MD5 -c -x -o cloc-2.06.exe cloc-2.06.pl
+C:> pp -M Win32::LongPath -M Encode::Unicode -M Digest::MD5 -c -x -o cloc-2.08.exe cloc-2.08.pl
 </pre>
 
 A variation on the instructions above is if you installed the portable
 version of Strawberry Perl, you will need to run `portableshell.bat` first
 to properly set up your environment.
 
-The Windows executable in the Releases section, <tt>cloc-2.06.exe</tt>,
+The Windows executable in the Releases section, <tt>cloc-2.08.exe</tt>,
 was built on a 64 bit Windows 11 computer using
 [Strawberry Perl](http://strawberryperl.com/)
-5.30.2 and
-[PAR::Packer](http://search.cpan.org/~rschupp/PAR-Packer-1.050/lib/pp.pm)
+5.32.1 and
+[PAR::Packer](http://search.cpan.org/~rschupp/PAR-Packer-1.064/lib/pp.pm)
 to build the `.exe`.
 
 #### Is the Windows executable safe to run?  Does it have malware?
@@ -479,6 +479,9 @@ You are encouraged to run your own virus scanners against the
 executable and also check sites such
 https://www.virustotal.com/ .
 The entries for recent versions are:
+
+cloc-2.08.exe:
+https://www.virustotal.com/gui/file/4529557d957ade0dd45746eae10e9c51ee01061bb617eeeab256672faf6e42c6?nocache=1
 
 cloc-2.06.exe:
 https://www.virustotal.com/gui/file/bbe48de9102d0f2520d292d65897001c1d068340eb7cd74dd1ee30c1a9091c4a?nocache=1
@@ -1040,8 +1043,11 @@ Usage: cloc [options] &lt;file(s)/dir(s)/git hash(es)&gt; | &lt;set 1&gt; &lt;se
 <pre>
 prompt> cloc --show-lang
 
+Language                   Extension(s)
+--------------------       ----------------------------------------
 ABAP                       (abap)
 ActionScript               (as)
+Activiti Business Process  (bpmn)
 Ada                        (ada, adb, ads, pad)
 ADSO/IDSM                  (adso)
 Agda                       (agda, lagda)
@@ -1054,6 +1060,7 @@ Apex Trigger               (trigger)
 APL                        (apl, apla, aplc, aplf, apli, apln, aplo, dyalog, dyapp, mipage)
 AppleScript                (applescript)
 Arduino Sketch             (ino)
+Aria                       (aria)
 ArkTs                      (ets)
 Arturo                     (art)
 AsciiDoc                   (adoc, asciidoc)
@@ -1065,11 +1072,14 @@ Astro                      (astro)
 Asymptote                  (asy)
 AutoHotkey                 (ahk, ahkl)
 awk                        (auk, awk, gawk, mawk, nawk)
+AXAML                      (axaml)
 Bazel                      (BUILD)
+Bicep                      (bicep, bicepparam)
 BitBake                    (bb, bbappend, bbclass)
 BizTalk Orchestration      (odx)
 BizTalk Pipeline           (btp)
 Blade                      (blade, blade.php)
+Blueprint                  (blp)
 Bourne Again Shell         (bash)
 Bourne Shell               (sh)
 BrightScript               (brs)
@@ -1078,10 +1088,13 @@ C                          (c, cats, ec, idc, pgc)
 C Shell                    (csh, tcsh)
 C#                         (cs)
 C# Designer                (designer.cs)
-C++                        (C, c++, c++m, cc, ccm, CPP, cpp, cppm, cxx, cxxm, h++, inl, ipp, ixx, pcc, tcc, tpp)
+C++                        (C, c++, c++m, cc, ccm, CPP, cpp, cppm, cxx, cxxm, h++, inl, ipp,
+                            ixx, pcc, tcc, tpp)
 C/C++ Header               (H, h, hh, hpp, hxx)
+Cadence                    (cdc)
 Cairo                      (cairo)
 Cake Build Script          (cake)
+Cangjie                    (cj)
 Carbon                     (carbon)
 CCS                        (ccs)
 Chapel                     (chpl)
@@ -1089,7 +1102,7 @@ Circom                     (circom)
 Civet                      (civet, cvt, cvtx)
 Clarity                    (clar)
 Clean                      (dcl, icl)
-Clojure                    (boot, cl2, clj, cljs.hl, cljscm, cljx, hic, riemann.config)
+Clojure                    (boot, cl2, clj, cljs.hl, cljscm, cljx, hic, riemann.config, cj)
 ClojureC                   (cljc)
 ClojureScript              (cljs)
 CMake                      (cmake, cmake.in, CMakeLists.txt)
@@ -1128,11 +1141,13 @@ dtrace                     (d)
 ECPP                       (ecpp)
 EEx                        (eex)
 EJS                        (ejs)
-Elixir                     (ex, exs)
+Elixir                     (ex)
+Elixir Script              (exs)
 Elm                        (elm)
 Embedded Crystal           (ecr)
 ERB                        (ERB, erb)
-Erlang                     (app.src, emakefile, erl, hrl, rebar.config, rebar.config.lock, rebar.lock, xrl, yrl)
+Erlang                     (app.src, emakefile, erl, hrl, rebar.config, rebar.config.lock,
+                            rebar.lock, xrl, yrl)
 Expect                     (exp)
 F#                         (fsi, fs, fs)
 F# Script                  (fsx)
@@ -1142,6 +1157,7 @@ Fish Shell                 (fish)
 Flatbuffers                (fbs)
 Focus                      (focexec)
 Forth                      (4th, e4, f83, fb, forth, fpm, fr, frt, ft, fth, rx, fs, f, for)
+Fortran 2003               (F03, f03)
 Fortran 77                 (F, F77, f77, FOR, FTN, ftn, pfo, f, for)
 Fortran 90                 (F90, f90)
 Fortran 95                 (F95, f95)
@@ -1154,7 +1170,8 @@ Glade                      (glade, ui)
 Gleam                      (gleam)
 Glimmer JavaScript         (gjs)
 Glimmer TypeScript         (gts)
-GLSL                       (comp, fp, frag, frg, fsh, fshader, geo, geom, glsl, glslv, gshader, tesc, tese, vert, vrx, vsh, vshader)
+GLSL                       (comp, fp, frag, frg, fsh, fshader, geo, geom, glsl, glslv, gshader,
+                            tesc, tese, vert, vrx, vsh, vshader)
 Go                         (go, ʕ◔ϖ◔ʔ)
 Godot Resource             (tres)
 Godot Scene                (tscn)
@@ -1168,8 +1185,10 @@ Handlebars                 (handlebars, hbs)
 Harbour                    (hb)
 Hare                       (ha)
 Haskell                    (hs, hsc, lhs)
+Haskell Boot               (hs-boot, lhs-boot)
 Haxe                       (hx, hxsl)
 HCL                        (hcl, nomad, tf, tfvars)
+Hibernate                  (hbm.xml)
 HLSL                       (cg, cginc, fxh, hlsl, hlsli, shader)
 HolyC                      (HC)
 Hoon                       (hoon)
@@ -1184,18 +1203,26 @@ InstallShield              (ism)
 IPL                        (ipl)
 Jai                        (jai)
 Janet                      (janet)
+Jasper Report XML/Template (jrxml)
 Java                       (java)
-JavaScript                 (_js, bones, cjs, es6, jake, jakefile, js, jsb, jscad, jsfl, jsm, jss, mjs, njs, pac, sjs, ssjs, xsjs, xsjslib)
+JavaScript                 (_js, bones, cjs, es6, jake, jakefile, js, jsb, jscad, jsfl, jsm,
+                            jss, mjs, njs, pac, sjs, ssjs, xsjs, xsjslib)
 JavaServer Faces           (jsf)
 JCL                        (jcl)
 Jinja Template             (j2, jinja, jinja2)
-JSON                       (arcconfig, avsc, composer.lock, geojson, gltf, har, htmlhintrc, json, json-tmlanguage, jsonl, mcmeta, mcmod.info, tern-config, tern-project, tfstate, tfstate.backup, topojson, watchmanconfig, webapp, webmanifest, yyp)
+JSON                       (arcconfig, avsc, composer.lock, geojson, gltf, har, htmlhintrc,
+                            json, json-tmlanguage, jsonl, mcmeta, mcmod.info, tern-config,
+                            tern-project, tfstate, tfstate.backup, topojson, watchmanconfig,
+                            webapp, webmanifest, yyp)
 JSON5                      (json5)
+Jsonnet                    (jsonnet)
 JSP                        (jsp, jspf)
+JSP Tag Library Definition (tld)
 JSX                        (jsx)
 Julia                      (jl)
 Juniper Junos              (junos)
 Jupyter Notebook           (ipynb)
+Justfile                   (just)
 Kermit                     (ksc)
 Korn Shell                 (ksh)
 Kotlin                     (kt, ktm, kts)
@@ -1206,6 +1233,7 @@ LESS                       (less)
 lex                        (l, lex)
 LFE                        (lfe)
 Linker Script              (ld)
+Liquibase                  (lb.xml)
 liquid                     (liquid)
 Lisp                       (asd, el, lisp, lsp, cl, jl)
 Literate Idris             (lidr)
@@ -1219,7 +1247,8 @@ m4                         (ac, m4)
 Magik                      (magik)
 make                       (am, Gnumakefile, gnumakefile, Makefile, makefile, mk)
 Mako                       (mako, mao)
-Markdown                   (contents.lr, markdown, md, mdown, mdwn, mdx, mkd, mkdn, mkdown, ronn, workbook)
+Markdown                   (contents.lr, markdown, md, mdown, mdwn, mdx, mkd, mkdn, mkdown,
+                            ronn, workbook)
 Mathematica                (cdf, ma, mathematica, mt, nbp, wl, wlt, m)
 MATLAB                     (m)
 Maven                      (pom, pom.xml)
@@ -1238,10 +1267,13 @@ NAnt script                (build)
 NASTRAN DMAP               (dmap)
 Nemerle                    (n)
 NetLogo                    (nlogo, nls)
+Nextflow                   (nf)
 Nickel                     (ncl)
 Nim                        (nim, nim.cfg, nimble, nimrod, nims)
 Nix                        (nix)
 Nunjucks                   (njk)
+Nushell                    (nu)
+Nushell Object Notation    (nuon)
 Objective-C                (m)
 Objective-C++              (mm)
 OCaml                      (eliom, eliomi, ml, ml4, mli, mll, mly)
@@ -1249,8 +1281,9 @@ Odin                       (odin)
 OpenCL                     (cl)
 OpenSCAD                   (scad)
 Oracle Forms               (fmt)
-Oracle PL/SQL              (bod, fnc, prc, spc, trg)
+Oracle PL/SQL              (bdy, bod, fnc, prc, spc, trg)
 Oracle Reports             (rex)
+Org Mode                   (org)
 P4                         (p4)
 Pascal                     (dpr, lpr, pas, pascal)
 Pascal/Pawn                (p)
@@ -1260,11 +1293,15 @@ Pawn                       (pawn, pwn)
 PEG                        (peg)
 peg.js                     (pegjs)
 peggy                      (peggy)
-Perl                       (ack, al, cpanfile, makefile.pl, perl, ph, plh, plx, pm, psgi, rexfile, pl, p6)
+Pek                        (pek)
+Perl                       (ack, al, cpanfile, makefile.pl, perl, ph, plh, plx, pm, psgi,
+                            rexfile, pl, p6)
 Pest                       (pest)
-PHP                        (aw, ctp, phakefile, php, php3, php4, php5, php_cs, php_cs.dist, phps, phpt, phtml)
-PHP/Pascal/Fortran/Pawn/Bitbake (inc)
+PHP                        (aw, ctp, phakefile, php, php3, php4, php5, php_cs, php_cs.dist, phps,
+                            phpt, phtml)
+PHP/Pascal/Fortran/Pawn/BitBake (inc)
 Pig Latin                  (pig)
+Pkl                        (pkl)
 PL/I                       (pl1)
 PL/M                       (lit, plm)
 PlantUML                   (iuml, plantuml, pu, puml, wsd)
@@ -1281,9 +1318,10 @@ Protocol Buffers           (proto)
 PRQL                       (prql)
 Pug                        (jade, pug)
 PureScript                 (purs)
-Python                     (buck, build.bazel, gclient, gyp, gypi, lmi, py, py3, pyde, pyi, pyp, pyt, pyw, sconscript, sconstruct, snakefile, tac, workspace, wscript, wsgi, xpy)
+Python                     (buck, build.bazel, gclient, gyp, gypi, lmi, py, py3, pyde, pyi, pyp,
+                            pyt, pyw, sconscript, sconstruct, snakefile, tac, workspace, wscript,
+                            wsgi, xpy)
 QML                        (qbs, qml)
-Qt                         (ui)
 Qt Linguist                (ts)
 Qt Project                 (pro)
 R                          (expr-dist, R, r, rd, rprofile, rsx)
@@ -1301,7 +1339,11 @@ Rexx                       (pprx, rexx)
 Ring                       (rform, rh, ring)
 Rmd                        (Rmd)
 RobotFramework             (robot)
-Ruby                       (appraisals, berksfile, brewfile, builder, buildfile, capfile, dangerfile, deliverfile, eye, fastfile, gemfile, gemfile.lock, gemspec, god, guardfile, irbrc, jarfile, jbuilder, mavenfile, mspec, podfile, podspec, pryrc, puppetfile, rabl, rake, rb, rbuild, rbw, rbx, ru, snapfile, thor, thorfile, vagrantfile, watchr)
+Ruby                       (appraisals, berksfile, brewfile, builder, buildfile, capfile,
+                            dangerfile, deliverfile, eye, fastfile, gemfile, gemfile.lock,
+                            gemspec, god, guardfile, irbrc, jarfile, jbuilder, mavenfile,
+                            mspec, podfile, podspec, pryrc, puppetfile, rabl, rake, rb,
+                            rbuild, rbw, rbx, ru, snapfile, thor, thorfile, vagrantfile, watchr)
 Ruby HTML                  (rhtml)
 Rust                       (rs, rs.in)
 SaltStack                  (sls)
@@ -1311,8 +1353,8 @@ Scala                      (kojo, sbt, scala)
 Scheme                     (sc, sch, scm, sld, sps, ss, sls)
 SCSS                       (scss)
 sed                        (sed)
-SKILL                      (il)
 SKILL++                    (ils)
+SKILL/.NET IL              (il)
 Slice                      (ice)
 Slim                       (slim)
 Slint                      (slint)
@@ -1332,6 +1374,7 @@ Starlark                   (bazel, bzl)
 Stata                      (ado, DO, do, doh, ihlp, mata, matah, sthlp)
 Stylus                     (styl)
 SugarSS                    (sss)
+SurrealQL                  (surql)
 Svelte                     (svelte)
 SVG                        (SVG, svg)
 Swift                      (swift)
@@ -1342,38 +1385,41 @@ TEAL                       (teal)
 Teamcenter met             (met)
 Teamcenter mth             (mth)
 Templ                      (templ)
-TeX                        (aux, bbx, bib, bst, cbx, dtx, ins, lbx, ltx, mkii, mkiv, mkvi, sty, tex, cls)
+TeX                        (aux, bbx, bib, bst, cbx, dtx, ins, lbx, ltx, mkii, mkiv, mkvi,
+                            sty, tex, cls)
 Text                       (text, txt)
-Unknown/BitBake            (conf)
 Thrift                     (thrift)
 TITAN Project File Information (tpd)
 Titanium Style Sheet       (tss)
 TLA+                       (tla)
-TNSDL                      (cii, cin, in1, in2, in3, in4, inf, interface, rou, sdl, sdt, spd, ssc, sst)
+TNSDL                      (cii, cin, in1, in2, in3, in4, inf, interface, rou, sdl, sdt,
+                            spd, ssc, sst)
 TOML                       (toml)
 tspeg                      (jspeg, tspeg)
 TTCN                       (ttcn, ttcn2, ttcn3, ttcnpp)
 Twig                       (twig)
-TypeScript                 (mts, tsx, ts)
+TypeScript                 (cts, mts, tsx, ts)
 Typst                      (typ)
 Umka                       (um)
 Unity-Prefab               (mat, prefab)
+Unknown/BitBake            (conf)
 USS                        (uss)
 UXML                       (uxml)
 Vala                       (vala)
 Vala Header                (vapi)
 VBA                        (VBA, vba)
+VBScript                   (VBS, vbs)
 Velocity Template Language (vm)
 Verilog-SystemVerilog      (sv, svh, v)
 VHDL                       (VHD, vhd, VHDL, vhdl, vhf, vhi, vho, vhs, vht, vhw)
 vim script                 (vim)
-Visual Basic               (BAS, bas, ctl, dsr, Dsr, frm, FRX, frx, vbp, vbw, cls)
-Visual Basic .NET          (VB, vb, vbproj, vbhtml, VBHTML)
-VBScript                   (VBS, vbs)
+Visual Basic               (BAS, bas, ctl, Dsr, dsr, frm, FRX, frx, vbp, vbw, cls)
+Visual Basic .NET          (VB, vb, VBHTML, vbhtml, vbproj)
 Visual Fox Pro             (SCA, sca)
 Visual Studio Solution     (sln)
 Visualforce Component      (component)
 Visualforce Page           (page)
+VSCode Workspace           (code-workspace)
 Vuejs Component            (vue)
 Vyper                      (vy)
 Web Services Description   (wsdl)
@@ -1393,14 +1439,29 @@ xBase                      (prg, prw)
 xBase Header               (ch)
 XHTML                      (xhtml)
 XMI                        (XMI, xmi)
-XML                        (adml, admx, ant, app.config, axml, builds, ccproj, ccxml, classpath, clixml, cproject, cscfg, csdef, csl, ct, depproj, ditamap, ditaval, dll.config, dotsettings, filters, fsproj, gmx, grxml, iml, ivy, jelly, jsproj, kml, launch, mdpolicy, mjml, natvis, ndproj, nproj, nuget.config, nuspec, odd, osm, packages.config, pkgproj, plist, proj, project, props, ps1xml, psc1, pt, rdf, resx, rss, scxml, settings.stylecop, sfproj, shproj, srdf, storyboard, sttheme, sublime-snippet, targets, tmcommand, tml, tmlanguage, tmpreferences, tmsnippet, tmtheme, urdf, ux, vcxproj, vsixmanifest, vssettings, vstemplate, vxml, web.config, web.debug.config, web.release.config, wsf, x3d, xacro, xib, xlf, xliff, XML, xml, xml.dist, xproj, xspec, xul, zcml)
+XML                        (adml, admx, ant, app.config, axml, builds, ccproj, ccxml,
+                            classpath, clixml, cproject, cscfg, csdef, csl, ct, depproj,
+                            ditamap, ditaval, dll.config, dotsettings, filters, fsproj,
+                            gmx, grxml, iml, ivy, jelly, jsproj, kml, launch, mdpolicy,
+                            mjml, natvis, ndproj, nproj, nuget.config, nuspec, odd, osm,
+                            packages.config, pkgproj, plist, proj, project, props, ps1xml,
+                            psc1, pt, rdf, resx, rss, scxml, settings.stylecop, sfproj,
+                            shproj, srdf, storyboard, sttheme, sublime-snippet, targets,
+                            tmcommand, tml, tmlanguage, tmpreferences, tmsnippet, tmtheme,
+                            urdf, ux, vcxproj, vsixmanifest, vssettings, vstemplate, vxml,
+                            web.config, web.debug.config, web.release.config, wsf, x3d,
+                            xacro, xib, xlf, xliff, XML, xml, xml.dist, xproj, xspec, xul,
+                            zcml)
+XML-Qt-GTK                 (ui)
 XQuery                     (xq, xql, xqm, xquery, xqy)
 XSD                        (XSD, xsd)
 XSLT                       (XSL, xsl, XSLT, xslt)
 Xtend                      (xtend)
 yacc                       (y, yacc)
-YAML                       (clang-format, clang-tidy, gemrc, glide.lock, mir, reek, rviz, sublime-syntax, syntax, yaml, yaml-tmlanguage, yml, yml.mysql)
+YAML                       (clang-format, clang-tidy, gemrc, glide.lock, mir, reek, rviz,
+                            sublime-syntax, syntax, yaml, yaml-tmlanguage, yml, yml.mysql)
 Yang                       (yang)
+Yarn                       (yarn)
 Zig                        (zig)
 zsh                        (zsh)
 </pre>
