@@ -541,6 +541,7 @@ $Exclude_Dir{".git"}   = 1;
 $Exclude_Dir{".bzr"}   = 1;
 $Exclude_Dir{".snapshot"} = 1;  # NetApp backups
 $Exclude_Dir{".config"} = 1;
+$Exclude_Dir{".venv"}  = 1; # Python virtual environment
 $opt_count_diff        = defined $opt_count_diff ? 1 : 0;
 $opt_diff              = 1  if $opt_diff_alignment    or
                                $opt_diff_list_file    or
@@ -8975,6 +8976,7 @@ sub set_constants {                          # {{{1
 # bash or sh scripts
             'dfy'         => 'Dafny'                 ,
             'da'          => 'DAL'                   ,
+            'daml'        => 'DAML'                  ,
             'dart'        => 'Dart'                  ,
             'dsc'         => 'DenizenScript'         ,
             'derw'        => 'Derw'                  ,
@@ -10250,6 +10252,9 @@ sub set_constants {                          # {{{1
                             ],
     'DAL'                => [
                                 [ 'remove_between_general', '[', ']', ],
+                            ],
+    'DAML'               => [
+                                [ 'remove_haskell_comments', '>filename<' ],
                             ],
     'Dart'               => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
@@ -12047,6 +12052,7 @@ sub set_constants {                          # {{{1
     'D'                            =>   1.70,
     'Dafny'                        =>   3.00,
     'DAL'                          =>   1.50,
+    'DAML'                         =>   2.11,
     'Dart'                         =>   2.00,
     'DenizenScript'                =>   1.00,
     'Delphi Form'                  =>   2.00,
@@ -17055,6 +17061,7 @@ my @generic = (
 my @plain_or_nested = (
    [Caml         =>  undef,       "(*"  => "*)"],
    [Dylan        =>  "//",        "/*"  => "*/"],
+   [DAML         =>  "-{2,}",     "{-"  => "-}"],
    [Haskell      =>  "-{2,}",     "{-"  => "-}"],
    [Hugo         =>  "!(?!\\\\)", "!\\" => "\\!"],
    [SLIDE        =>  "#",         "(*"  => "*)"],
