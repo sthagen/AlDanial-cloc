@@ -8917,6 +8917,9 @@ sub set_constants {                          # {{{1
             'ixx'         => 'C++'                   ,
             'tcc'         => 'C++'                   ,
             'tpp'         => 'C++'                   ,
+            'cxx'         => 'C++'                   ,
+            'cpp'         => 'C++'                   ,
+            'CPP'         => 'C++'                   ,
             'cdc'         => 'Cadence'               ,
             'ccs'         => 'CCS'                   ,
             'civet'       => 'Civet'                 ,
@@ -8958,8 +8961,6 @@ sub set_constants {                          # {{{1
             'cg3'         => 'Constraint Grammar'    ,
             'rlx'         => 'Constraint Grammar'    ,
             'Containerfile'  => 'Containerfile'      ,
-            'cpp'         => 'C++'                   ,
-            'CPP'         => 'C++'                   ,
             'cr'          => 'Crystal'               ,
             'cs'          => 'C#/Smalltalk'          ,
             'designer.cs' => 'C# Designer'           ,
@@ -8970,7 +8971,9 @@ sub set_constants {                          # {{{1
             'csv'         => "CSV"                   ,
             'cu'          => 'CUDA'                  ,
             'cuh'         => 'CUDA'                  , # CUDA header file
-            'cxx'         => 'C++'                   ,
+            'c3'          => 'C3'                    ,
+            'c3i'         => 'C3'                    ,
+            'c3t'         => 'C3'                    ,
             'd'           => 'D/dtrace'              ,
 # in addition, .d can map to init.d files typically written as
 # bash or sh scripts
@@ -10241,6 +10244,12 @@ sub set_constants {                          # {{{1
                             ],
     'Cucumber'           => [
                                 [ 'remove_matches'      , '^\s*#'  ],
+                            ],
+    'C3'                 => [
+                                [ 'remove_matches'      , '^\s*//' ],
+                                [ 'remove_between_general', '<*', '*>' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                                [ 'remove_inline'       , '//.*$'  ],
                             ],
     'D/dtrace'           => [ [ 'die' ,          ], ], # never called
     'D'                  => [
@@ -12049,6 +12058,7 @@ sub set_constants {                          # {{{1
     'CSV'                          =>   0.1,
     'Cucumber'                     =>   3.00,
     'CUDA'                         =>   1.00,
+    'C3'                           =>   1.61,
     'D'                            =>   1.70,
     'Dafny'                        =>   3.00,
     'DAL'                          =>   1.50,
