@@ -305,6 +305,11 @@ my @Tests = (
                     'args' => '../tests/inputs/cucumber.feature',
                 },
                 {
+                    'name' => 'C3',
+                    'ref'  => '../tests/outputs/io.c3.yaml',
+                    'args' => '../tests/inputs/io.c3',
+                },
+                {
                     'name' => 'Dafny',
                     'ref'  => '../tests/outputs/fib.dfy.yaml',
                     'args' => '../tests/inputs/fib.dfy',
