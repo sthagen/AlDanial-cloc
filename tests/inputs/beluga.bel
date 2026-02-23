@@ -1,8 +1,6 @@
 %%% This aims at testing
 %%% cloc's configuration file
 %%% for beluga.
-%%% Test using
-%%% cloc --read-lang-def=beluga_cloc_config.txt  examples/cloc/test.bel 
 
 % Refer to Beluga's reference guide for syntax
 % https://complogic.cs.mcgill.ca/beluga/userguide2/userguide.pdf
