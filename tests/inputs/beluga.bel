@@ -1,0 +1,20 @@
+%%% This aims at testing
+%%% cloc's configuration file
+%%% for beluga.
+%%% Test using
+%%% cloc --read-lang-def=beluga_cloc_config.txt  examples/cloc/test.bel 
+
+% Refer to Beluga's reference guide for syntax
+% https://complogic.cs.mcgill.ca/beluga/userguide2/userguide.pdf
+
+ % In-line comment (but after a space)
+
+nat : type. % in-line comment.
+z : nat.
+succ : nat -> nat.
+
+%{
+    Multi-line
+    comment
+}%
+

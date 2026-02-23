@@ -8885,6 +8885,7 @@ sub set_constants {                          # {{{1
             'blade'       => 'Blade'                 ,
             'blade.php'   => 'Blade'                 ,
             'b'           => 'Brainfuck'             ,
+            'bel'         => 'Beluga'                ,
             'bf'          => 'Brainfuck'             ,
             'bicep'       => 'Bicep'                 ,
             'bicepparam'  => 'Bicep'                 ,
@@ -10057,6 +10058,10 @@ sub set_constants {                          # {{{1
     'bc'                 => [
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
+                            ],
+    'beluga'             => [
+                                [ 'remove_between_general', '%{', '%}' ],
+                                [ 'remove_matches'      , '^\s*%'      ],
                             ],
     'Bicep'              => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
@@ -12015,6 +12020,7 @@ sub set_constants {                          # {{{1
     'Bazel'                        =>   1.00,
     'bc'                           =>   1.50,
     'Bicep'                        =>   3.00,
+    'Beluga'                       =>   5.00,
     'Blade'                        =>   2.00,
     'bliss'                        =>   0.75,
     'Blueprint'                    =>   2.50,
