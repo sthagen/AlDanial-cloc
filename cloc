@@ -10059,7 +10059,7 @@ sub set_constants {                          # {{{1
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
                             ],
-    'beluga'             => [
+    'Beluga'             => [
                                 [ 'remove_between_general', '%{', '%}' ],
                                 [ 'remove_matches'      , '^\s*%'      ],
                             ],
