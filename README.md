@@ -3116,8 +3116,8 @@ comments rather than code.
 If cloc does not recognize a language you are interested in counting,
 you can either 
 
-#. [implement it yourself](#implement-it-yourself),
-#. [request it to be implemented](#request-to-implement).
+1. [implement it yourself](#implement-it-yourself),
+2. [request it to be implemented](#request-to-implement).
 
 <a name="implement-it-yourself"></a> []({{{1)
 ## Implement an Additional Language
@@ -3178,7 +3178,7 @@ In short, you will need to:
       },
       ```
 
-      - Make sure you examine the output of `‎tests/outputs/<Language name>.<extension>.yaml` and that it is correct, then run `make test` from the `Unix` folder to make sure your test was successful.
+    - Make sure you examine the output of `‎tests/outputs/<Language name>.<extension>.yaml` and that it is correct, then run `make test` from the `Unix` folder to make sure your test was successful.
 
 You can use [this pull request](https://github.com/AlDanial/cloc/pull/962) or [this one](https://github.com/AlDanial/cloc/pull/947) as guidelines.
 
