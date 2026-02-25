@@ -47,7 +47,7 @@ at http://cloc.sourceforge.net/ since August 2006.
     *   [Java Programmatic Interface](#java-programmatic-interface-)
 *   [Complex regular subexpression recursion limit ](#complex-regular-subexpression-recursion-limit-)
 *   [Limitations](#limitations-)
-*   [Requesting Support for Additional Languages](#requesting-support-for-additional-languages-)
+*   [Support for Additional Languages](#support-for-additional-languages-)
 *   [Reporting Problems](#reporting-problems-)
 *   [Citation](#citation-)
 *   [Acknowledgments](#acknowledgments-)
@@ -1074,6 +1074,7 @@ AutoHotkey                 (ahk, ahkl)
 awk                        (auk, awk, gawk, mawk, nawk)
 AXAML                      (axaml)
 Bazel                      (BUILD)
+Beluga                     (bel)
 Bicep                      (bicep, bicepparam)
 BitBake                    (bb, bbappend, bbclass)
 BizTalk Orchestration      (odx)
@@ -3110,10 +3111,81 @@ comments rather than code.
 
 [](1}}})
 <a name="AdditionalLanguages"></a> []({{{1)
-#   [Requesting Support for Additional Languages &#9650;](#___top "click to go to top of document")
+#   [Support for Additional Languages &#9650;](#___top "click to go to top of document")
 
 If cloc does not recognize a language you are interested in counting,
-create a [GitHub issue](https://github.com/AlDanial/cloc/issues)
+you can either 
+
+1. [implement it yourself](#implement-it-yourself),
+2. [request it to be implemented](#request-to-implement).
+
+<a name="implement-it-yourself"></a> []({{{1)
+## Implement an Additional Language
+
+In short, you will need to:
+
+- edit the `cloc` file:
+
+  - look for `%{$rh_Language_by_Extension} = (             # {{{1` and add, respecting the alphabetical order,
+
+    ```
+    '<ext>' => '<Language Name>'           ,
+    ```
+    
+    where `<ext>` is the extension used by your language, and `<Language Name>` is its name. Repeat for each extension used by your language.
+    
+  - look for `%{$rhaa_Filters_by_Language} = (            # {{{1`, and add, respecting the alphabetical order,
+  
+  ```
+   '<Language Name>'     => [
+                                <list>
+                            ],
+    ```
+    
+    where `<Language Name>` is the name of the language you are implementing, and `<list>` is a list of filter options (whose documentation remains to be written -- take inspiration from existing languages).
+    
+  - look for `%{$rh_Scale_Factor}          = (             # {{{1`, and add, respecting the alphabetical order,
+  
+    ```
+    '<Language Name>'             =>   <factor>,
+    ```
+    
+      where `<Language Name>` is the name of the language you are implementing, and `<factor>` is a [third generation language scale factor](#third-generation-language-scale-factors-).
+    
+- edit the `Readme.md` file, adding under ["Recognized Languages"](#recognized-languages-) 
+
+  ```
+  <Language Name>                    (<list of extensions>)
+  ```
+
+  for `<Language Name>` the name of the language you are implementing, and `<list of extensions>` the list of extensions you declared in `rh_Language_by_Extension`.
+  
+- (optional, but recommended) Add a test case:
+  
+    - Create a `tests/inputs/<Language name>.<extension>` file, containing some code written in `<Language name>`,
+    - Generate a `‎tests/outputs/<Language name>.<extension>.yaml` file, using 
+    
+      ```
+      cloc --yaml tests/inputs/<Language name>.<extension> --out ‎tests/outputs/<Language name>.<extension>.yaml
+      ```
+    - Add your case in `Unix/t/00_C.t`: under `my @Tests = (`, add 
+    
+      ```
+      {
+        'name' => '<Language name>',
+        'ref'  => '../tests/outputs/<Language name>.<extension>.yaml',
+        'args' => '../tests/inputs/<Language name>.<extension>',
+      },
+      ```
+
+    - Make sure you examine the output of `‎tests/outputs/<Language name>.<extension>.yaml` and that it is correct, then run `make test` from the `Unix` folder to make sure your test was successful.
+
+You can use [this pull request](https://github.com/AlDanial/cloc/pull/962) or [this one](https://github.com/AlDanial/cloc/pull/947) as guidelines.
+
+<a name="implement-it-yourself"></a> []({{{1)
+## Request an Additional Language
+
+Create a [GitHub issue](https://github.com/AlDanial/cloc/issues)
 requesting support for your language.  Include this information:
 <ol>
 <li> File extensions associated with the language.  If the language does

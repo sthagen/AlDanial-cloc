@@ -113,6 +113,11 @@ my @Tests = (
                     'args' => '../tests/inputs/BUILD',
                 },
                 {
+                    'name' => 'Beluga',
+                    'ref'  => '../tests/outputs/beluga.bel.yaml',
+                    'args' => '../tests/inputs/beluga.bel',
+                },
+                {
                     'name' => 'Bicep',
                     'ref'  => '../tests/outputs/sample.bicep.yaml',
                     'args' => '../tests/inputs/sample.bicep',
