@@ -305,6 +305,11 @@ my @Tests = (
                     'args' => '../tests/inputs/parser_2.civet',
                 },
                 {
+                    'name' => 'Clarity',
+                    'ref'  => '../tests/outputs/clarityfiles.clar.yaml',
+                    'args' => '../tests/inputs/clarityfiles.clar',
+                },
+                {
                     'name' => 'CSV',
                     'ref'  => '../tests/outputs/cloc_counts.csv.yaml',
                     'args' => '../tests/inputs/cloc_counts.csv',
@@ -1262,14 +1267,14 @@ my @Tests = (
                     'args' => '../tests/inputs/scheme.sls',
                 },
                 {
-                    'name' => 'Clarity',
-                    'ref'  => '../tests/outputs/clarityfiles.clar.yaml',
-                    'args' => '../tests/inputs/clarityfiles.clar',
-                },
-                {
                     'name' => 'SKILL',
                     'ref'  => '../tests/outputs/ChangeProperties.il.yaml',
                     'args' => '../tests/inputs/ChangeProperties.il',
+                },
+                {
+                    'name' => 'Slang',
+                    'ref'  => '../tests/outputs/hello-world.slang.yaml',
+                    'args' => '../tests/inputs/hello-world.slang',
                 },
                 {
                     'name' => 'Starlark',
