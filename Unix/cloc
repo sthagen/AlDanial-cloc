@@ -9585,6 +9585,7 @@ sub set_constants {                          # {{{1
             'udf.sql'     => 'SQL Stored Procedure'  ,
             'data.sql'    => 'SQL Data'              ,
             'sss'         => 'SugarSS'               ,
+            'slang'       => 'Slang'                 ,
             'slint'       => 'Slint'                 ,
             'st'          => 'Smalltalk'             ,
             'rules'       => 'Snakemake'             ,
@@ -11317,6 +11318,12 @@ sub set_constants {                          # {{{1
                                 [ 'remove_matches'      , '^\s*#'  ],
                                 [ 'remove_inline'       , '#.*$'   ],
                             ],
+    'Slang'             => [
+                                [ 'remove_inline'       , '//.*$'  ],
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '"', '//', '' ],
+                                [ 'call_regexp_common'  , 'C++'    ],
+                            ],
     'Slice'             => [
                                 [ 'rm_comments_in_strings', '"', '/*', '*/' ],
                                 [ 'rm_comments_in_strings', '"', '//', '' ],
@@ -12319,6 +12326,7 @@ sub set_constants {                          # {{{1
     'SCSS'                         =>   1.5 ,
     'SKILL'                        =>   2.00,
     'SKILL++'                      =>   2.00,
+    'Slang'                        =>   2.00,
     'Slice'                        =>   1.50,
     'Slint'                        =>   1.00,
     'Smalltalk'                    =>   4.00,

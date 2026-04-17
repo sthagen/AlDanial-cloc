@@ -519,6 +519,7 @@ Several GUI frontends to cloc are available:
 * [cloctui](https://github.com/edward-jazzhands/cloctui)
 * [ClocViewer](https://github.com/Roemer/ClocViewer)
 * [codeflower](https://github.com/jmensch1/codeflower)
+* [cloc-studio](https://github.com/mlgzackfly/cloc-studio) (for macOS)
 
 # Options
 
