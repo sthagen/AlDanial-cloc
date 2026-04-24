@@ -9399,7 +9399,6 @@ sub set_constants {                          # {{{1
             'psql'        => 'SQL'                   ,
             'xpy'         => 'Python'                ,
             'wsgi'        => 'Python'                ,
-            'wscript'     => 'Python'                ,
             'workspace'   => 'Python'                ,
             'tac'         => 'Python'                ,
             'snakefile'   => 'Python'                ,
@@ -9920,6 +9919,7 @@ sub set_constants {                          # {{{1
             'Containerfile'     => 'Containerfile'      ,
             'Jenkinsfile'       => 'Groovy'             ,
             'jenkinsfile'       => 'Groovy'             ,
+            'wscript'           => 'Python'             ,
             );
 # 1}}}
 %{$rh_Language_by_Prefix}     = (            # {{{1
