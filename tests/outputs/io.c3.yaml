@@ -3,19 +3,19 @@
 header : 
   cloc_url           : github.com/AlDanial/cloc
   cloc_version       : 2.09
-  elapsed_seconds    : 0.00584793090820312
+  elapsed_seconds    : 0.00552797317504883
   n_files            : 1
-  n_lines            : 163
-  files_per_second   : 171.000652315721
-  lines_per_second   : 27873.1063274625
+  n_lines            : 173
+  files_per_second   : 180.898128180799
+  lines_per_second   : 31295.3761752782
   report_file        : ../outputs/io.c3.yaml
 'C3' :
   nFiles: 1
-  blank: 13
-  comment: 36
-  code: 114
+  blank: 17
+  comment: 40
+  code: 116
 SUM: 
-  blank: 13
-  comment: 36
-  code: 114
+  blank: 17
+  comment: 40
+  code: 116
   nFiles: 1

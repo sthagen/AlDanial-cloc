@@ -161,3 +161,13 @@ fn usz? readline_to_stream_impl(OStream out_stream, IStream in_stream, usz limit
 	return len;
 }
 
+
+// Additional tests for cloc
+char *raw = `multiline
+raw string with // and /*
+markers inside`;
+
+/* Unfinished block comment at the end of the file
+
+these are valid in c3
+

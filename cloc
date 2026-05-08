@@ -10260,9 +10260,13 @@ sub set_constants {                          # {{{1
                             ],
     'C3'                 => [
                                 [ 'remove_matches'      , '^\s*//' ],
+                                [ 'rm_comments_in_strings', '"', '/*', '*/' ],
+                                [ 'rm_comments_in_strings', '`', '/*', '*/', 1 ],
+                                [ 'rm_comments_in_strings', '`', '//', '', 1 ],
+                                [ 'rm_comments_in_strings', '`', '<*', '*>', 1 ],
+                                [ 'remove_between_general', '/*', '*/' ],
                                 [ 'remove_between_general', '<*', '*>' ],
                                 [ 'call_regexp_common'  , 'C++'    ],
-                                [ 'remove_inline'       , '//.*$'  ],
                             ],
     'D/dtrace'           => [ [ 'die' ,          ], ], # never called
     'D'                  => [

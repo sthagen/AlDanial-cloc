@@ -1049,6 +1049,7 @@ C#                         (cs)
 C# Designer                (designer.cs)
 C++                        (C, c++, c++m, cc, ccm, CPP, cpp, cppm, cxx, cxxm, h++, inl, ipp,
                             ixx, pcc, tcc, tpp)
+C3                         (c3, c3i, c3t)
 C/C++ Header               (H, h, hh, hpp, hxx)
 Cadence                    (cdc)
 Cairo                      (cairo)
