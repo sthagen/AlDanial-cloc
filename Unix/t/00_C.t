@@ -1003,6 +1003,7 @@ my @Tests = (
                               '../tests/inputs/hanoi.inc ' .
                               '../tests/inputs/pascal.inc ' .
                               '../tests/inputs/test1.inc ' .
+                              '../tests/inputs/assembly.inc ' .
                               '../tests/inputs/Pascal.p ' .
                               '../tests/inputs/queue.p ',
                 },
@@ -1270,6 +1271,11 @@ my @Tests = (
                     'name' => 'Scheme',
                     'ref'  => '../tests/outputs/scheme.sls.yaml',
                     'args' => '../tests/inputs/scheme.sls',
+                },
+                {
+                    'name' => 'Sema',
+                    'ref'  => '../tests/outputs/sample.sema.yaml',
+                    'args' => '../tests/inputs/sample.sema',
                 },
                 {
                     'name' => 'SKILL',
@@ -1620,6 +1626,11 @@ my @Tests = (
                     'name' => 'Windows Resource',
                     'ref'  => '../tests/outputs/ZosNet.rc.yaml',
                     'args' => '../tests/inputs/ZosNet.rc',
+                },
+                {
+                    'name' => 'Wren',
+                    'ref'  => '../tests/outputs/mandelbrot.wren.yaml',
+                    'args' => '../tests/inputs/mandelbrot.wren',
                 },
                 {
                     'name' => 'WXML',
