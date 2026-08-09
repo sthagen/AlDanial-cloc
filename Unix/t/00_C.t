@@ -18,6 +18,16 @@ my @Tests = (
                     'args' => '../tests/inputs/Lookup.agda',
                 },
                 {
+                    'name' => 'AL',
+                    'ref'  => '../tests/outputs/AL.al.yaml',
+                    'args' => '../tests/inputs/AL.al',
+                },
+                {
+                    'name' => 'AL 2 (Perl AutoLoader, same extension)',
+                    'ref'  => '../tests/outputs/perl_autoloader.al.yaml',
+                    'args' => '../tests/inputs/perl_autoloader.al',
+                },
+                {
                     'name' => 'AnsProlog',
                     'ref'  => '../tests/outputs/AnsProlog.lp.yaml',
                     'args' => '../tests/inputs/AnsProlog.lp',
@@ -1448,9 +1458,19 @@ my @Tests = (
                     'args' => '../tests/inputs/toml_example.toml',
                 },
                 {
-                    'name' => 'TNSDL',
+                    'name' => 'TNSDL 1',
                     'ref'  => '../tests/outputs/tnsdl.sdl.yaml',
                     'args' => '../tests/inputs/tnsdl.sdl',
+                },
+                {
+                    'name' => 'TNSDL 2',
+                    'ref'  => '../tests/outputs/TNSDL_1.inf.yaml',
+                    'args' => '../tests/inputs/TNSDL_1.inf',
+                },
+                {
+                    'name' => 'TNSDL 3',
+                    'ref'  => '../tests/outputs/TNSDL_2.inf.yaml',
+                    'args' => '../tests/inputs/TNSDL_2.inf',
                 },
                 {
                     'name' => 'tspeg 1',
@@ -1601,6 +1621,16 @@ my @Tests = (
                     'name' => 'Web Services Description',
                     'ref'  => '../tests/outputs/webservice.wsdl.yaml',
                     'args' => '../tests/inputs/webservice.wsdl',
+                },
+                {
+                    'name' => 'Windows INF 1',
+                    'ref'  => '../tests/outputs/setup_info_1.inf.yaml',
+                    'args' => '../tests/inputs/setup_info_1.inf',
+                },
+                {
+                    'name' => 'Windows INF 2',
+                    'ref'  => '../tests/outputs/setup_info_2.inf.yaml',
+                    'args' => '../tests/inputs/setup_info_2.inf',
                 },
                 {
                     'name' => 'WGSL',
